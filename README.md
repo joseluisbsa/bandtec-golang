@@ -2,7 +2,7 @@
 
 Pagina Web desenvolvida com a linguagem Go.
 
-Projeto 3º semestre faculdade Bandtec.
+Projeto 3º semestre faculdade Bandtec - Primeiro semestre 2017.
 
 API REST em Go
 Servidor Web em Go
