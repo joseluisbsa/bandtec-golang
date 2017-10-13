@@ -2,43 +2,28 @@ package bd
 
 import (
 	"database/sql"
-	"denuncia"
-	"fmt"
 	"log"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
 
 // array usado para enviar o total de cada categoria
-var Denuncias []denuncia.DadosDasDenuncias
+var Denuncias []DadosDasDenuncias
 
 // array usado para enviar o total de denuncias por regiao
-var DenunciasPorCategoria []denuncia.DadosDasDenuncias
+var DenunciasPorCategoria []DadosDasDenuncias
 
 // Usado para armazenar o ultimo 'id' do banco de dados
 var proximoIdParaGravarNoBanco int
 
-var (
-	servidor = "pwbt.database.windows.net"
-	usuario  = "admin-jose"
-	senha    = "123abc!@#"
-	banco    = "PWBT"
-	porta    = 1433
-)
-
-var stringDeConexao = fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s;port=%d", servidor, usuario, senha, banco, porta)
-
-var bancoDeDados, _ = sql.Open("tipoBanco", "stringDeConexao")
-var erroBD error
-
-func GravarNovaDenuncia(nova *denuncia.NovaDenuncia) {
+func GravarNovaDenuncia(nova *NovaDenuncia) {
 
 	AbrirConexaoBanco()
-	insert, erro := bancoDeDados.Query(`INSERT into tab_denuncia (id, id_categoria, id_localidade) 
+	insert, erro := BancoDeDados.Query(`INSERT into tab_denuncia (id, id_categoria, id_localidade) 
 										VALUES (?1, ?2, ?3)`, proximoIdParaGravarNoBanco, &nova.Categoria, &nova.Localidade)
 
 	defer insert.Close()       // fecha comando Query
-	defer bancoDeDados.Close() // fecha conexão com o Banco
+	defer BancoDeDados.Close() // fecha conexão com o Banco
 	if erro != nil {
 		log.Println("erro no INSERT:", erro.Error())
 	} else {
@@ -47,9 +32,9 @@ func GravarNovaDenuncia(nova *denuncia.NovaDenuncia) {
 }
 
 func AbrirConexaoBanco() {
-	bancoDeDados, erroBD = sql.Open("mssql", stringDeConexao)
-	if erroBD != nil {
-		log.Println("erro ao conectar ao Banco: ", erroBD.Error())
+	BancoDeDados, ErroBD = sql.Open("mssql", stringDeConexao)
+	if ErroBD != nil {
+		log.Println("erro ao conectar ao Banco: ", ErroBD.Error())
 	}
 }
 
@@ -72,7 +57,7 @@ func AtualizarDenuncias() {
 
 	consultarNoBanco(query, &Denuncias, 1)
 
-	defer bancoDeDados.Close()
+	defer BancoDeDados.Close()
 
 	log.Printf("Denuncias atualizadas")
 }
@@ -92,20 +77,20 @@ func AtualizarDenunciasPorCategoria() {
 
 	consultarNoBanco(query, &DenunciasPorCategoria, 2)
 
-	defer bancoDeDados.Close()
+	defer BancoDeDados.Close()
 
 	log.Printf("Denuncias por categorias atualizadas")
 }
 
-func consultarNoBanco(query string, den *[]denuncia.DadosDasDenuncias, opcao int) {
+func consultarNoBanco(query string, den *[]DadosDasDenuncias, opcao int) {
 
-	retornoSelectBanco, erro := bancoDeDados.Query(query)
+	retornoSelectBanco, erro := BancoDeDados.Query(query)
 	if erro != nil {
 		log.Println("erro no SELECT das Categorias:", erro.Error())
 	}
 
 	for retornoSelectBanco.Next() {
-		addCategoria := denuncia.DadosDasDenuncias{}
+		addCategoria := DadosDasDenuncias{}
 		if opcao == 1 {
 			if erro := retornoSelectBanco.Scan(&addCategoria.ID, &addCategoria.Nome, &addCategoria.Total); erro != nil {
 				log.Println("erro ao salvar as categoriasFull retornados do Banco:", erro.Error())
@@ -123,13 +108,13 @@ func AtualizarUltimoIDBanco() {
 
 	AbrirConexaoBanco()
 
-	ultimoIDBanco, erro := bancoDeDados.Query("select MAX(id) from tab_denuncia")
+	ultimoIDBanco, erro := BancoDeDados.Query("select MAX(id) from tab_denuncia")
 	if erro != nil {
 		log.Println("erro no SELECT count categoria:", erro.Error())
 	}
 
 	defer ultimoIDBanco.Close()
-	defer bancoDeDados.Close()
+	defer BancoDeDados.Close()
 
 	for ultimoIDBanco.Next() {
 

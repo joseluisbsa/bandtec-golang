@@ -1,4 +1,4 @@
-package denuncia
+package bd
 
 type DadosDasDenuncias struct {
 	ID     string `json:"id,omitempty"`
