@@ -15,5 +15,5 @@ var (
 
 var stringDeConexao = fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s;port=%d", servidor, usuario, senha, banco, porta)
 
-var BancoDeDados, _ = sql.Open("tipoBanco", "stringDeConexao")
-var ErroBD error
+var bancoDeDados, _ = sql.Open("tipoBanco", "stringDeConexao")
+var erroBD error

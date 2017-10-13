@@ -19,11 +19,11 @@ var proximoIdParaGravarNoBanco int
 func GravarNovaDenuncia(nova *NovaDenuncia) {
 
 	AbrirConexaoBanco()
-	insert, erro := BancoDeDados.Query(`INSERT into tab_denuncia (id, id_categoria, id_localidade) 
+	gravar, erro := bancoDeDados.Query(`INSERT into tab_denuncia (id, id_categoria, id_localidade) 
 										VALUES (?1, ?2, ?3)`, proximoIdParaGravarNoBanco, &nova.Categoria, &nova.Localidade)
 
-	defer insert.Close()       // fecha comando Query
-	defer BancoDeDados.Close() // fecha conexão com o Banco
+	defer gravar.Close()       // fecha comando Query
+	defer bancoDeDados.Close() // fecha conexão com o Banco
 	if erro != nil {
 		log.Println("erro no INSERT:", erro.Error())
 	} else {
@@ -32,9 +32,9 @@ func GravarNovaDenuncia(nova *NovaDenuncia) {
 }
 
 func AbrirConexaoBanco() {
-	BancoDeDados, ErroBD = sql.Open("mssql", stringDeConexao)
-	if ErroBD != nil {
-		log.Println("erro ao conectar ao Banco: ", ErroBD.Error())
+	bancoDeDados, erroBD = sql.Open("mssql", stringDeConexao)
+	if erroBD != nil {
+		log.Println("erro ao conectar ao Banco: ", erroBD.Error())
 	}
 }
 
@@ -57,7 +57,7 @@ func AtualizarDenuncias() {
 
 	consultarNoBanco(query, &Denuncias, 1)
 
-	defer BancoDeDados.Close()
+	defer bancoDeDados.Close()
 
 	log.Printf("Denuncias atualizadas")
 }
@@ -77,14 +77,14 @@ func AtualizarDenunciasPorCategoria() {
 
 	consultarNoBanco(query, &DenunciasPorCategoria, 2)
 
-	defer BancoDeDados.Close()
+	defer bancoDeDados.Close()
 
 	log.Printf("Denuncias por categorias atualizadas")
 }
 
 func consultarNoBanco(query string, den *[]DadosDasDenuncias, opcao int) {
 
-	retornoSelectBanco, erro := BancoDeDados.Query(query)
+	retornoSelectBanco, erro := bancoDeDados.Query(query)
 	if erro != nil {
 		log.Println("erro no SELECT das Categorias:", erro.Error())
 	}
@@ -108,13 +108,13 @@ func AtualizarUltimoIDBanco() {
 
 	AbrirConexaoBanco()
 
-	ultimoIDBanco, erro := BancoDeDados.Query("select MAX(id) from tab_denuncia")
+	ultimoIDBanco, erro := bancoDeDados.Query("select MAX(id) from tab_denuncia")
 	if erro != nil {
 		log.Println("erro no SELECT count categoria:", erro.Error())
 	}
 
 	defer ultimoIDBanco.Close()
-	defer BancoDeDados.Close()
+	defer bancoDeDados.Close()
 
 	for ultimoIDBanco.Next() {
 
