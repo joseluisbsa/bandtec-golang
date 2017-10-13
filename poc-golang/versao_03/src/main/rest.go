@@ -6,6 +6,7 @@ import (
 
 	// bibliotecas Nativas do Golang
 	"bd"
+	"denuncia"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -22,7 +23,7 @@ func gravarNovaDenuncia(w http.ResponseWriter, req *http.Request) {
 	// modelo que deve enviado
 	// {"categoria":"4","localidade":"2"}
 	log.Printf("Post mais uma Nova Denuncia")
-	var NovaD bd.NovaDenuncia
+	var NovaD denuncia.NovaDenuncia
 
 	// grava em 'novaD' os dados enviados
 	erro := json.NewDecoder(req.Body).Decode(&NovaD)
@@ -39,10 +40,10 @@ func gravarNovaDenuncia(w http.ResponseWriter, req *http.Request) {
 func pegarUmaCategoria(w http.ResponseWriter, req *http.Request) {
 	// OBSERVAÇÂO: comentarios de como funciona esta na 'func GetUsuario'
 	log.Printf("Get uma Categoria")
-	params := mux.Vars(req)
-	var categoriaEncontrada []bd.DadosDasDenuncias
+	parametros := mux.Vars(req)
+	var categoriaEncontrada []denuncia.DadosDasDenuncias
 	for _, item := range bd.DenunciasPorCategoria {
-		if strings.ToLower(item.Nome) == strings.ToLower(params["uri"]) {
+		if strings.ToLower(item.Nome) == strings.ToLower(parametros["uri"]) {
 			categoriaEncontrada = append(categoriaEncontrada, item)
 		}
 	}

@@ -2,29 +2,18 @@ package bd
 
 import (
 	"database/sql"
+	"denuncia"
 	"fmt"
 	"log"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
 
-type DadosDasDenuncias struct {
-	ID     string `json:"id,omitempty"`
-	Nome   string `json:"nome,omitempty"`
-	Total  string `json:"total,omitempty"`
-	Regiao string `json:"regiao,omitempty"`
-}
-
-type NovaDenuncia struct {
-	Categoria  string `json:"categoria,omitempty"`
-	Localidade string `json:"localidade,omitempty"`
-}
-
 // array usado para enviar o total de cada categoria
-var Denuncias []DadosDasDenuncias
+var Denuncias []denuncia.DadosDasDenuncias
 
 // array usado para enviar o total de denuncias por regiao
-var DenunciasPorCategoria []DadosDasDenuncias
+var DenunciasPorCategoria []denuncia.DadosDasDenuncias
 
 // Usado para armazenar o ultimo 'id' do banco de dados
 var proximoIdParaGravarNoBanco int
@@ -42,7 +31,7 @@ var stringDeConexao = fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s;
 var bancoDeDados, _ = sql.Open("tipoBanco", "stringDeConexao")
 var erroBD error
 
-func GravarNovaDenuncia(nova *NovaDenuncia) {
+func GravarNovaDenuncia(nova *denuncia.NovaDenuncia) {
 
 	AbrirConexaoBanco()
 	insert, erro := bancoDeDados.Query(`INSERT into tab_denuncia (id, id_categoria, id_localidade) 
@@ -108,7 +97,7 @@ func AtualizarDenunciasPorCategoria() {
 	log.Printf("Denuncias por categorias atualizadas")
 }
 
-func consultarNoBanco(query string, den *[]DadosDasDenuncias, opcao int) {
+func consultarNoBanco(query string, den *[]denuncia.DadosDasDenuncias, opcao int) {
 
 	retornoSelectBanco, erro := bancoDeDados.Query(query)
 	if erro != nil {
@@ -116,7 +105,7 @@ func consultarNoBanco(query string, den *[]DadosDasDenuncias, opcao int) {
 	}
 
 	for retornoSelectBanco.Next() {
-		addCategoria := DadosDasDenuncias{}
+		addCategoria := denuncia.DadosDasDenuncias{}
 		if opcao == 1 {
 			if erro := retornoSelectBanco.Scan(&addCategoria.ID, &addCategoria.Nome, &addCategoria.Total); erro != nil {
 				log.Println("erro ao salvar as categoriasFull retornados do Banco:", erro.Error())
