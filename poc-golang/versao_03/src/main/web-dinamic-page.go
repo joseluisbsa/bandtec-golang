@@ -204,7 +204,7 @@ func populateStaticPages() *template.Template {
 	result := template.New("templates")
 	templatePaths := new([]string)
 
-	basePath := "pages"
+	basePath := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/src/pages"
 	templateFolder, _ := os.Open(basePath)
 	defer templateFolder.Close()
 	templatePathsRaw, _ := templateFolder.Readdir(-1)
@@ -213,7 +213,7 @@ func populateStaticPages() *template.Template {
 		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
 	}
 
-	basePath = "themes/" + themeName
+	basePath = "/home/joseph/github/bandtec-golang/poc-golang/versao_03/src/themes/" + themeName
 	templateFolder, _ = os.Open(basePath)
 	defer templateFolder.Close()
 	templatePathsRaw, _ = templateFolder.Readdir(-1)
@@ -228,7 +228,7 @@ func populateStaticPages() *template.Template {
 
 func serveResource(w http.ResponseWriter, req *http.Request) {
 
-	path := "public/" + themeName + req.URL.Path
+	path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/src/public/" + themeName + req.URL.Path
 	var contentType string
 
 	if strings.HasSuffix(path, ".css") {
