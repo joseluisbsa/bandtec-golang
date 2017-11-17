@@ -105,7 +105,8 @@ func atualizaJSON() {
 
 	//////////////////////////////////////// rotina para escrever nos arquivos
 	// mudar o path !
-	path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages/"
+	//path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages/"
+	path := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages/"
 	// arquivo default.json com o formato padrão do JSON que a pagina lê
 	jsonOut, err := ioutil.ReadFile(path + "default.json")
 	if err != nil {
@@ -205,7 +206,8 @@ func populateStaticPages() *template.Template {
 	result := template.New("templates")
 	templatePaths := new([]string)
 
-	basePath := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages"
+	//basePath := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages"
+	basePath := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages"
 	templateFolder, _ := os.Open(basePath)
 	defer templateFolder.Close()
 	templatePathsRaw, _ := templateFolder.Readdir(-1)
@@ -214,7 +216,8 @@ func populateStaticPages() *template.Template {
 		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
 	}
 
-	basePath = "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/themes/" + themeName
+	//basePath = "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/themes/" + themeName
+	basePath = "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/themes/" + themeName
 	templateFolder, _ = os.Open(basePath)
 	defer templateFolder.Close()
 	templatePathsRaw, _ = templateFolder.Readdir(-1)
@@ -229,7 +232,8 @@ func populateStaticPages() *template.Template {
 
 func serveResource(w http.ResponseWriter, req *http.Request) {
 
-	path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/public/" + themeName + req.URL.Path
+	//path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/public/" + themeName + req.URL.Path
+	path := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/public/" + themeName + req.URL.Path
 	var contentType string
 
 	if strings.HasSuffix(path, ".css") {
