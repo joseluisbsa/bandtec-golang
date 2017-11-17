@@ -1,261 +1,234 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
-	"encoding/json"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"os"
-	"strings"
-	"text/template"
-	"var"
-	"github.com/gorilla/mux"
+	"servidor"
 )
 
 func main() {
-	serveWeb()
+	servidor.ServeWeb()
 }
 
-// struct to pass into the template
-//type defaultContext struct {
-//	Title string
-//}
+// var themeName = getThemeName()
+// var staticPages = populateStaticPages()
 
-// type CategoriaFull struct {
-// 	ID    string `json:"id,omitempty"`
-// 	Nome  string `json:"nome,omitempty"`
-// 	Total string `json:"total,omitempty"`
+// var pageAlias string
+
+// func attHTML() {
+// 	// função usada para atualizar os arquivos .html e .json
+// 	themeName = getThemeName()
+// 	staticPages = populateStaticPages()
 // }
 
-// type CategoriaEach struct {
-// 	ID     string `json:"id,omitempty"`
-// 	Nome   string `json:"nome,omitempty"`
-// 	Regiao string `json:"regiao,omitempty"`
-// 	Total  string `json:"total,omitempty"`
+// func serveWeb() {
+
+// 	gorillaRoute := mux.NewRouter()
+// 	gorillaRoute.HandleFunc("/", serveContent)
+// 	// URL com parametros dinamicos
+// 	gorillaRoute.HandleFunc("/{pageAlias}", serveContent)
+
+// 	http.HandleFunc("/img/", serveResource)
+// 	http.HandleFunc("/css/", serveResource)
+// 	http.HandleFunc("/js/", serveResource)
+
+// 	http.Handle("/", gorillaRoute)
+// 	http.ListenAndServe(":8081", nil)
 // }
 
-var themeName = getThemeName()
-var staticPages = populateStaticPages()
-var page_alias string
+// func atualizaJSON() {
+// 	log.Printf("atualiza arquivo JSON")
+// 	// Busca na API todas as categorias e o total de denuncias de cada uma
+// 	respostaFull, err := http.Get("http://localhost:8080/denuncias/")
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
 
-func attHTML() {
-	// função usada para atualizar os arquivos .html e .json
-	themeName = getThemeName()
-	staticPages = populateStaticPages()
-}
+// 	// Copia apenas o corpo onde esta os dados solicitados
+// 	dadosRespostaFull, err := ioutil.ReadAll(respostaFull.Body)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+// 	// cria a Struct que ira salvar os dados recebidos da API
+// 	var categFull []variaveis.CategoriaFull
+// 	// coverte de json para struct
+// 	json.Unmarshal(dadosRespostaFull, &categFull)
+// 	log.Println("Full: ", categFull)
 
-func serveWeb() {
+// 	//for _, item := range categFull{
+// 	//	log.Println(item.Nome, item.Total)
+// 	//}
 
-	gorillaRoute := mux.NewRouter()
-	gorillaRoute.HandleFunc("/", serveContent)
-	// URL com parametros dinamicos
-	gorillaRoute.HandleFunc("/{page_alias}", serveContent)
+// 	///////////////////////////////////// busca por categoria e regiao
 
-	http.HandleFunc("/img/", serveResource)
-	http.HandleFunc("/css/", serveResource)
-	http.HandleFunc("/js/", serveResource)
+// 	respostaEach, err := http.Get("http://localhost:8080/denuncias/0")
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
 
-	http.Handle("/", gorillaRoute)
-	http.ListenAndServe(":8081", nil)
-}
+// 	dadosRespostaEach, err := ioutil.ReadAll(respostaEach.Body)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
 
-func atualizaJSON() {
-	log.Printf("atualiza arquivo JSON")
-	// Busca na API todas as categorias e o total de denuncias de cada uma
-	respostaFull, err := http.Get("http://localhost:8080/denuncias/")
-	if err != nil {
-		log.Println(err)
-	}
+// 	var categEach []variaveis.CategoriaEach
+// 	json.Unmarshal(dadosRespostaEach, &categEach)
+// 	log.Println("Full: ", categEach)
+// 	//for _, item := range categEach{
+// 	//	log.Println(item.ID, item.Nome, item.Regiao, item.Total)
+// 	//}
 
-	// Copia apenas o corpo onde esta os dados solicitados
-	dadosRespostaFull, err := ioutil.ReadAll(respostaFull.Body)
-	if err != nil {
-		log.Println(err)
-	}
-	// cria a Struct que ira salvar os dados recebidos da API
-	var categFull []var.CategoriaFull
-	// coverte de json para struct
-	json.Unmarshal(dadosRespostaFull, &categFull)
-	log.Println("Full: ", categFull)
+// 	//////////////////////////////////////// rotina para escrever nos arquivos
+// 	// mudar o path !
+// 	//path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages/"
+// 	path := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages/"
+// 	// arquivo default.json com o formato padrão do JSON que a pagina lê
+// 	jsonOut, err := ioutil.ReadFile(path + "default.json")
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
 
-	//for _, item := range categFull{
-	//	log.Println(item.Nome, item.Total)
-	//}
+// 	for _, item := range categFull {
+// 		// Com o conteudo lido do arquivo 'default.json', sera substituido a 1ª palavra 'Categoria'
+// 		// pelo Nome da categoria salva em 'categFull' atual do for range
+// 		attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), []byte(item.Nome), 1)
+// 		// Sobrescreve/Cria arquivo 'geral.json.html' com o conteudo de 'default.json'
+// 		// em 'path' esta o camminho onde o arquivo deve ser salvo
+// 		if err = ioutil.WriteFile(path+"geral.json.html", attCategoria, 0666); err != nil {
+// 			log.Println(err)
+// 		}
+// 		// Lê o novo conteudo do JSON, caso contrario iria sobrescrever
+// 		jsonOut, err = ioutil.ReadFile(path + "geral.json.html")
+// 		if err != nil {
+// 			log.Println(err)
+// 		}
 
-	///////////////////////////////////// busca por categoria e regiao
+// 		attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
+// 		if err = ioutil.WriteFile(path+"geral.json.html", attTotal, 0666); err != nil {
+// 			log.Println(err)
+// 		}
 
-	respostaEach, err := http.Get("http://localhost:8080/denuncias/0")
-	if err != nil {
-		log.Println(err)
-	}
+// 		jsonOut, err = ioutil.ReadFile(path + "geral.json.html")
+// 		if err != nil {
+// 			log.Println(err)
+// 		}
+// 	}
 
-	dadosRespostaEach, err := ioutil.ReadAll(respostaEach.Body)
-	if err != nil {
-		log.Println(err)
-	}
+// 	jsonOut, err = ioutil.ReadFile(path + "default.json")
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+// 	// Mesma rotina acima, porem agora separado as categorias por região
+// 	for _, item := range categEach {
+// 		// Para comparar se os nomes são iguais deixo os dois em CAIXA ALTO e comparo.
+// 		if strings.ToUpper(item.Nome) == strings.ToUpper(pageAlias) {
+// 			//categoriaFound = append(categoriaFound,item)
+// 			//log.Println(item.ID, item.Nome, item.Regiao, item.Total)
 
-	var categEach []CategoriaEach
-	json.Unmarshal(dadosRespostaEach, &categEach)
-	log.Println("Full: ", categEach)
-	//for _, item := range categEach{
-	//	log.Println(item.ID, item.Nome, item.Regiao, item.Total)
-	//}
+// 			attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), []byte(item.Regiao), 1)
+// 			if err = ioutil.WriteFile(path+"categoria.json.html", attCategoria, 0666); err != nil {
+// 				log.Println(err)
+// 			}
 
-	//////////////////////////////////////// rotina para escrever nos arquivos
-	// mudar o path !
-	//path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages/"
-	path := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages/"
-	// arquivo default.json com o formato padrão do JSON que a pagina lê
-	jsonOut, err := ioutil.ReadFile(path + "default.json")
-	if err != nil {
-		log.Println(err)
-	}
+// 			jsonOut, err = ioutil.ReadFile(path + "categoria.json.html")
+// 			if err != nil {
+// 				log.Println(err)
+// 			}
 
-	for _, item := range categFull {
-		// Com o conteudo lido do arquivo 'default.json', sera substituido a 1ª palavra 'Categoria'
-		// pelo Nome da categoria salva em 'categFull' atual do for range
-		attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), []byte(item.Nome), 1)
-		// Sobrescreve/Cria arquivo 'geral.json.html' com o conteudo de 'default.json'
-		// em 'path' esta o camminho onde o arquivo deve ser salvo
-		if err = ioutil.WriteFile(path+"geral.json.html", attCategoria, 0666); err != nil {
-			log.Println(err)
-		}
-		// Lê o novo conteudo do JSON, caso contrario iria sobrescrever
-		jsonOut, err = ioutil.ReadFile(path + "geral.json.html")
-		if err != nil {
-			log.Println(err)
-		}
+// 			attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
+// 			if err = ioutil.WriteFile(path+"categoria.json.html", attTotal, 0666); err != nil {
+// 				log.Println(err)
+// 			}
 
-		attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
-		if err = ioutil.WriteFile(path+"geral.json.html", attTotal, 0666); err != nil {
-			log.Println(err)
-		}
+// 			jsonOut, err = ioutil.ReadFile(path + "categoria.json.html")
+// 			if err != nil {
+// 				log.Println(err)
+// 			}
+// 		}
+// 	}
+// 	// Atualiza todos os arquivos .html e .json que serão usados nas paginas
+// 	attHTML()
+// }
 
-		jsonOut, err = ioutil.ReadFile(path + "geral.json.html")
-		if err != nil {
-			log.Println(err)
-		}
-	}
+// func serveContent(w http.ResponseWriter, r *http.Request) {
 
-	jsonOut, err = ioutil.ReadFile(path + "default.json")
-	if err != nil {
-		log.Println(err)
-	}
-	// Mesma rotina acima, porem agora separado as categorias por região
-	for _, item := range categEach {
-		// Para comparar se os nomes são iguais deixo os dois em CAIXA ALTO e comparo.
-		if strings.ToUpper(item.Nome) == strings.ToUpper(page_alias) {
-			//categoriaFound = append(categoriaFound,item)
-			//log.Println(item.ID, item.Nome, item.Regiao, item.Total)
+// 	atualizaJSON()
+// 	urlParams := mux.Vars(r)
+// 	pageAlias = urlParams["pageAlias"]
+// 	if pageAlias == "" {
+// 		pageAlias = "geral"
+// 	}
 
-			attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), []byte(item.Regiao), 1)
-			if err = ioutil.WriteFile(path+"categoria.json.html", attCategoria, 0666); err != nil {
-				log.Println(err)
-			}
+// 	staticPage := staticPages.Lookup(pageAlias + ".html")
+// 	if staticPage == nil {
+// 		log.Println("NAO ACHOU!!")
+// 		staticPage = staticPages.Lookup("404.html")
+// 		w.WriteHeader(404)
+// 	}
 
-			jsonOut, err = ioutil.ReadFile(path + "categoria.json.html")
-			if err != nil {
-				log.Println(err)
-			}
+// 	//Values to pass into the template
+// 	context := variaveis.DefaultContext{}
+// 	context.Title = pageAlias
 
-			attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
-			if err = ioutil.WriteFile(path+"categoria.json.html", attTotal, 0666); err != nil {
-				log.Println(err)
-			}
+// 	staticPage.Execute(w, context)
+// }
 
-			jsonOut, err = ioutil.ReadFile(path + "categoria.json.html")
-			if err != nil {
-				log.Println(err)
-			}
-		}
-	}
-	// Atualiza todos os arquivos .html e .json que serão usados nas paginas
-	attHTML()
-}
+// func getThemeName() string {
+// 	return "bs4"
+// }
 
-func serveContent(w http.ResponseWriter, r *http.Request) {
+// func populateStaticPages() *template.Template {
+// 	result := template.New("templates")
+// 	templatePaths := new([]string)
 
-	atualizaJSON()
-	urlParams := mux.Vars(r)
-	page_alias = urlParams["page_alias"]
-	if page_alias == "" {
-		page_alias = "geral"
-	}
+// 	//basePath := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages"
+// 	basePath := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages"
+// 	templateFolder, _ := os.Open(basePath)
+// 	defer templateFolder.Close()
+// 	templatePathsRaw, _ := templateFolder.Readdir(-1)
+// 	for _, pathinfo := range templatePathsRaw {
+// 		log.Println(pathinfo.Name())
+// 		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
+// 	}
 
-	staticPage := staticPages.Lookup(page_alias + ".html")
-	if staticPage == nil {
-		log.Println("NAO ACHOU!!")
-		staticPage = staticPages.Lookup("404.html")
-		w.WriteHeader(404)
-	}
+// 	//basePath = "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/themes/" + themeName
+// 	basePath = "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/themes/" + themeName
+// 	templateFolder, _ = os.Open(basePath)
+// 	defer templateFolder.Close()
+// 	templatePathsRaw, _ = templateFolder.Readdir(-1)
+// 	for _, pathinfo := range templatePathsRaw {
+// 		log.Println(pathinfo.Name())
+// 		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
+// 	}
 
-	//Values to pass into the template
-	context := defaultContext{}
-	context.Title = page_alias
+// 	result.ParseFiles(*templatePaths...)
+// 	return result
+// }
 
-	staticPage.Execute(w, context)
-}
+// func serveResource(w http.ResponseWriter, req *http.Request) {
 
-func getThemeName() string {
-	return "bs4"
-}
+// 	//path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/public/" + themeName + req.URL.Path
+// 	path := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/public/" + themeName + req.URL.Path
+// 	var contentType string
 
-func populateStaticPages() *template.Template {
-	result := template.New("templates")
-	templatePaths := new([]string)
+// 	if strings.HasSuffix(path, ".css") {
+// 		contentType = "text/css; charset=utf-8"
+// 	} else if strings.HasSuffix(path, ".png") {
+// 		contentType = "image/png; charset=utf-8"
+// 	} else if strings.HasSuffix(path, ".jpg") {
+// 		contentType = "image/jpg; charset=utf-8"
+// 	} else if strings.HasSuffix(path, ".js") {
+// 		contentType = "application/javascript; charset=utf-8"
+// 	} else {
+// 		contentType = "text/plain; charset=utf-8"
+// 	}
 
-	//basePath := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages"
-	basePath := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages"
-	templateFolder, _ := os.Open(basePath)
-	defer templateFolder.Close()
-	templatePathsRaw, _ := templateFolder.Readdir(-1)
-	for _, pathinfo := range templatePathsRaw {
-		log.Println(pathinfo.Name())
-		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
-	}
-
-	//basePath = "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/themes/" + themeName
-	basePath = "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/themes/" + themeName
-	templateFolder, _ = os.Open(basePath)
-	defer templateFolder.Close()
-	templatePathsRaw, _ = templateFolder.Readdir(-1)
-	for _, pathinfo := range templatePathsRaw {
-		log.Println(pathinfo.Name())
-		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
-	}
-
-	result.ParseFiles(*templatePaths...)
-	return result
-}
-
-func serveResource(w http.ResponseWriter, req *http.Request) {
-
-	//path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/public/" + themeName + req.URL.Path
-	path := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/public/" + themeName + req.URL.Path
-	var contentType string
-
-	if strings.HasSuffix(path, ".css") {
-		contentType = "text/css; charset=utf-8"
-	} else if strings.HasSuffix(path, ".png") {
-		contentType = "image/png; charset=utf-8"
-	} else if strings.HasSuffix(path, ".jpg") {
-		contentType = "image/jpg; charset=utf-8"
-	} else if strings.HasSuffix(path, ".js") {
-		contentType = "application/javascript; charset=utf-8"
-	} else {
-		contentType = "text/plain; charset=utf-8"
-	}
-
-	log.Println(path)
-	f, err := os.Open(path)
-	if err == nil {
-		defer f.Close()
-		w.Header().Add("Content-type", contentType)
-		br := bufio.NewReader(f)
-		br.WriteTo(w)
-	} else {
-		w.WriteHeader(404)
-	}
-}
+// 	log.Println(path)
+// 	f, err := os.Open(path)
+// 	if err == nil {
+// 		defer f.Close()
+// 		w.Header().Add("Content-type", contentType)
+// 		br := bufio.NewReader(f)
+// 		br.WriteTo(w)
+// 	} else {
+// 		w.WriteHeader(404)
+// 	}
+// }
