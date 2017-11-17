@@ -19,7 +19,6 @@ func ServeWeb() {
 	// URL com parametros dinamicos
 	gorillaRoute.HandleFunc("/{pageAlias}", serveContent)
 
-	http.HandleFunc("/img/", serveResource)
 	http.HandleFunc("/css/", serveResource)
 	http.HandleFunc("/js/", serveResource)
 
@@ -58,10 +57,6 @@ func serveResource(w http.ResponseWriter, req *http.Request) {
 
 	if strings.HasSuffix(path, ".css") {
 		contentType = "text/css; charset=utf-8"
-	} else if strings.HasSuffix(path, ".png") {
-		contentType = "image/png; charset=utf-8"
-	} else if strings.HasSuffix(path, ".jpg") {
-		contentType = "image/jpg; charset=utf-8"
 	} else if strings.HasSuffix(path, ".js") {
 		contentType = "application/javascript; charset=utf-8"
 	} else {
