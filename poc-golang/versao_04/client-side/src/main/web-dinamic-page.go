@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 	"text/template"
-
+	"var"
 	"github.com/gorilla/mux"
 )
 
@@ -19,22 +19,22 @@ func main() {
 }
 
 // struct to pass into the template
-type defaultContext struct {
-	Title string
-}
+//type defaultContext struct {
+//	Title string
+//}
 
-type CategoriaFull struct {
-	ID    string `json:"id,omitempty"`
-	Nome  string `json:"nome,omitempty"`
-	Total string `json:"total,omitempty"`
-}
+// type CategoriaFull struct {
+// 	ID    string `json:"id,omitempty"`
+// 	Nome  string `json:"nome,omitempty"`
+// 	Total string `json:"total,omitempty"`
+// }
 
-type CategoriaEach struct {
-	ID     string `json:"id,omitempty"`
-	Nome   string `json:"nome,omitempty"`
-	Regiao string `json:"regiao,omitempty"`
-	Total  string `json:"total,omitempty"`
-}
+// type CategoriaEach struct {
+// 	ID     string `json:"id,omitempty"`
+// 	Nome   string `json:"nome,omitempty"`
+// 	Regiao string `json:"regiao,omitempty"`
+// 	Total  string `json:"total,omitempty"`
+// }
 
 var themeName = getThemeName()
 var staticPages = populateStaticPages()
@@ -75,7 +75,7 @@ func atualizaJSON() {
 		log.Println(err)
 	}
 	// cria a Struct que ira salvar os dados recebidos da API
-	var categFull []CategoriaFull
+	var categFull []var.CategoriaFull
 	// coverte de json para struct
 	json.Unmarshal(dadosRespostaFull, &categFull)
 	log.Println("Full: ", categFull)
