@@ -1,11 +1,12 @@
 package variaveis
 
+///home/joseph/github/bandtec-golang/poc-golang/versao_04
 var PageAlias string
 var TemaDaPagina = "bs4"
-var Public = "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/public/"
-var PastaPaginas = "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages"
-var PastaTemas = "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/themes/"
-var ArquivosJSON = "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages/"
+var Public = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/public/"
+var PastaPaginas = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/pages"
+var PastaTemas = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/themes/"
+var ArquivosJSON = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/pages/"
 var TodasDenuncias = "http://localhost:8080/denuncias/"
 var TodasDenunciasPorRegiao = "http://localhost:8080/denuncias/0"
 
