@@ -31,10 +31,10 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 		variaveis.PageAlias = "geral"
 	}
 
-	staticPage := paginas.StaticPages.Lookup(variaveis.PageAlias + ".html")
-	if staticPage == nil {
+	paginaEstatica := paginas.PaginasEstaticas.Lookup(variaveis.PageAlias + ".html")
+	if paginaEstatica == nil {
 		log.Println("NAO ACHOU!!")
-		staticPage = paginas.StaticPages.Lookup("404.html")
+		paginaEstatica = paginas.PaginasEstaticas.Lookup("404.html")
 		w.WriteHeader(404)
 	}
 
@@ -42,5 +42,5 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 	context := variaveis.DefaultContext{}
 	context.Title = variaveis.PageAlias
 
-	staticPage.Execute(w, context)
+	paginaEstatica.Execute(w, context)
 }

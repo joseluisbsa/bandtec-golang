@@ -14,15 +14,15 @@ import (
 func atualizarJSON() {
 	log.Printf("atualiza arquivo JSON")
 	// Busca na API todas as categorias e o total de denuncias de cada uma
-	respostaFull, err := http.Get(variaveis.TodasDenuncias)
-	if err != nil {
-		log.Println(err)
+	respostaFull, erro := http.Get(variaveis.TodasDenuncias)
+	if erro != nil {
+		log.Println(erro)
 	}
 
 	// Copia apenas o corpo onde esta os dados solicitados
-	dadosRespostaFull, err := ioutil.ReadAll(respostaFull.Body)
-	if err != nil {
-		log.Println(err)
+	dadosRespostaFull, erro := ioutil.ReadAll(respostaFull.Body)
+	if erro != nil {
+		log.Println(erro)
 	}
 	// cria a Struct que ira salvar os dados recebidos da API
 	var categFull []variaveis.CategoriaFull
@@ -31,14 +31,14 @@ func atualizarJSON() {
 
 	///////////////////////////////////// busca por categoria e regiao
 
-	respostaEach, err := http.Get(variaveis.TodasDenunciasPorRegiao)
-	if err != nil {
-		log.Println(err)
+	respostaEach, erro := http.Get(variaveis.TodasDenunciasPorRegiao)
+	if erro != nil {
+		log.Println(erro)
 	}
 
-	dadosRespostaEach, err := ioutil.ReadAll(respostaEach.Body)
-	if err != nil {
-		log.Println(err)
+	dadosRespostaEach, erro := ioutil.ReadAll(respostaEach.Body)
+	if erro != nil {
+		log.Println(erro)
 	}
 
 	var categEach []variaveis.CategoriaEach
@@ -46,13 +46,11 @@ func atualizarJSON() {
 	log.Println("Full: ", categEach)
 
 	//////////////////////////////////////// rotina para escrever nos arquivos
-	// mudar o path !
-	//path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages/"
 	path := variaveis.ArquivosJSON
 	// arquivo default.json com o formato padrão do JSON que a pagina lê
-	jsonOut, err := ioutil.ReadFile(path + "default.json")
-	if err != nil {
-		log.Println(err)
+	jsonOut, erro := ioutil.ReadFile(path + "default.json")
+	if erro != nil {
+		log.Println(erro)
 	}
 
 	for _, item := range categFull {
@@ -61,29 +59,29 @@ func atualizarJSON() {
 		attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), []byte(item.Nome), 1)
 		// Sobrescreve/Cria arquivo 'geral.json.html' com o conteudo de 'default.json'
 		// em 'path' esta o camminho onde o arquivo deve ser salvo
-		if err = ioutil.WriteFile(path+"geral.json.html", attCategoria, 0666); err != nil {
-			log.Println(err)
+		if erro = ioutil.WriteFile(path+"geral.json.html", attCategoria, 0666); erro != nil {
+			log.Println(erro)
 		}
 		// Lê o novo conteudo do JSON, caso contrario iria sobrescrever
-		jsonOut, err = ioutil.ReadFile(path + "geral.json.html")
-		if err != nil {
-			log.Println(err)
+		jsonOut, erro = ioutil.ReadFile(path + "geral.json.html")
+		if erro != nil {
+			log.Println(erro)
 		}
 
 		attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
-		if err = ioutil.WriteFile(path+"geral.json.html", attTotal, 0666); err != nil {
-			log.Println(err)
+		if erro = ioutil.WriteFile(path+"geral.json.html", attTotal, 0666); erro != nil {
+			log.Println(erro)
 		}
 
-		jsonOut, err = ioutil.ReadFile(path + "geral.json.html")
-		if err != nil {
-			log.Println(err)
+		jsonOut, erro = ioutil.ReadFile(path + "geral.json.html")
+		if erro != nil {
+			log.Println(erro)
 		}
 	}
 
-	jsonOut, err = ioutil.ReadFile(path + "default.json")
-	if err != nil {
-		log.Println(err)
+	jsonOut, erro = ioutil.ReadFile(path + "default.json")
+	if erro != nil {
+		log.Println(erro)
 	}
 	// Mesma rotina acima, porem agora separado as categorias por região
 	for _, item := range categEach {
@@ -91,23 +89,23 @@ func atualizarJSON() {
 		if strings.ToUpper(item.Nome) == strings.ToUpper(variaveis.PageAlias) {
 
 			attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), []byte(item.Regiao), 1)
-			if err = ioutil.WriteFile(path+"categoria.json.html", attCategoria, 0666); err != nil {
-				log.Println(err)
+			if erro = ioutil.WriteFile(path+"categoria.json.html", attCategoria, 0666); erro != nil {
+				log.Println(erro)
 			}
 
-			jsonOut, err = ioutil.ReadFile(path + "categoria.json.html")
-			if err != nil {
-				log.Println(err)
+			jsonOut, erro = ioutil.ReadFile(path + "categoria.json.html")
+			if erro != nil {
+				log.Println(erro)
 			}
 
 			attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
-			if err = ioutil.WriteFile(path+"categoria.json.html", attTotal, 0666); err != nil {
-				log.Println(err)
+			if erro = ioutil.WriteFile(path+"categoria.json.html", attTotal, 0666); erro != nil {
+				log.Println(erro)
 			}
 
-			jsonOut, err = ioutil.ReadFile(path + "categoria.json.html")
-			if err != nil {
-				log.Println(err)
+			jsonOut, erro = ioutil.ReadFile(path + "categoria.json.html")
+			if erro != nil {
+				log.Println(erro)
 			}
 		}
 	}

@@ -10,11 +10,11 @@ import (
 	"variaveis"
 )
 
-var PeginasEstaticas = populateStaticPages()
+var PaginasEstaticas = populateStaticPages()
 
 // função usada para atualizar os arquivos .html e .json
 func AtualizarArquivosWeb() {
-	PeginasEstaticas = populateStaticPages()
+	PaginasEstaticas = populateStaticPages()
 }
 
 func populateStaticPages() *template.Template {
