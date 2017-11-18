@@ -11,10 +11,10 @@ import (
 	"variaveis"
 )
 
-func atualizaJSON() {
+func atualizarJSON() {
 	log.Printf("atualiza arquivo JSON")
 	// Busca na API todas as categorias e o total de denuncias de cada uma
-	respostaFull, err := http.Get("http://localhost:8080/denuncias/")
+	respostaFull, err := http.Get(variaveis.TodasDenuncias)
 	if err != nil {
 		log.Println(err)
 	}
@@ -28,15 +28,10 @@ func atualizaJSON() {
 	var categFull []variaveis.CategoriaFull
 	// coverte de json para struct
 	json.Unmarshal(dadosRespostaFull, &categFull)
-	log.Println("Full: ", categFull)
-
-	//for _, item := range categFull{
-	//	log.Println(item.Nome, item.Total)
-	//}
 
 	///////////////////////////////////// busca por categoria e regiao
 
-	respostaEach, err := http.Get("http://localhost:8080/denuncias/0")
+	respostaEach, err := http.Get(variaveis.TodasDenunciasPorRegiao)
 	if err != nil {
 		log.Println(err)
 	}
@@ -49,14 +44,11 @@ func atualizaJSON() {
 	var categEach []variaveis.CategoriaEach
 	json.Unmarshal(dadosRespostaEach, &categEach)
 	log.Println("Full: ", categEach)
-	//for _, item := range categEach{
-	//	log.Println(item.ID, item.Nome, item.Regiao, item.Total)
-	//}
 
 	//////////////////////////////////////// rotina para escrever nos arquivos
 	// mudar o path !
 	//path := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages/"
-	path := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages/"
+	path := variaveis.ArquivosJSON
 	// arquivo default.json com o formato padrão do JSON que a pagina lê
 	jsonOut, err := ioutil.ReadFile(path + "default.json")
 	if err != nil {
@@ -97,8 +89,6 @@ func atualizaJSON() {
 	for _, item := range categEach {
 		// Para comparar se os nomes são iguais deixo os dois em CAIXA ALTO e comparo.
 		if strings.ToUpper(item.Nome) == strings.ToUpper(variaveis.PageAlias) {
-			//categoriaFound = append(categoriaFound,item)
-			//log.Println(item.ID, item.Nome, item.Regiao, item.Total)
 
 			attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), []byte(item.Regiao), 1)
 			if err = ioutil.WriteFile(path+"categoria.json.html", attCategoria, 0666); err != nil {
@@ -122,11 +112,5 @@ func atualizaJSON() {
 		}
 	}
 	// Atualiza todos os arquivos .html e .json que serão usados nas paginas
-	attHTML()
-}
-
-func attHTML() {
-	// função usada para atualizar os arquivos .html e .json
-	paginas.ThemeName = paginas.GetThemeName()
-	paginas.StaticPages = paginas.PopulateStaticPages()
+	paginas.AtualizarArquivosWeb()
 }

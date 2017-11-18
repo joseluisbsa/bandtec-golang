@@ -1,34 +1,35 @@
 package paginas
 
 import (
+	"bufio"
 	"html/template"
 	"log"
+	"net/http"
 	"os"
+	"strings"
+	"variaveis"
 )
 
-var ThemeName = GetThemeName()
-var StaticPages = PopulateStaticPages()
+var StaticPages = populateStaticPages()
 
-func GetThemeName() string {
-	return "bs4"
+// função usada para atualizar os arquivos .html e .json
+func AtualizarArquivosWeb() {
+	StaticPages = populateStaticPages()
 }
 
-func PopulateStaticPages() *template.Template {
-	result := template.New("templates")
+func populateStaticPages() *template.Template {
+	resultado := template.New("templates")
 	templatePaths := new([]string)
 
-	//basePath := "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/pages"
-	basePath := "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/pages"
-	templateFolder, _ := os.Open(basePath)
+	templateFolder, _ := os.Open(variaveis.PastaPaginas)
 	defer templateFolder.Close()
 	templatePathsRaw, _ := templateFolder.Readdir(-1)
 	for _, pathinfo := range templatePathsRaw {
 		log.Println(pathinfo.Name())
-		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
+		*templatePaths = append(*templatePaths, variaveis.PastaPaginas+"/"+pathinfo.Name())
 	}
 
-	//basePath = "/home/joseph/github/bandtec-golang/poc-golang/versao_03/client-side/src/themes/" + themeName
-	basePath = "C:/Users/aluno/bandtec-golang/poc-golang/versao_04/client-side/src/themes/" + ThemeName
+	basePath := variaveis.PastaTemas + variaveis.TemaDaPagina
 	templateFolder, _ = os.Open(basePath)
 	defer templateFolder.Close()
 	templatePathsRaw, _ = templateFolder.Readdir(-1)
@@ -37,6 +38,31 @@ func PopulateStaticPages() *template.Template {
 		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
 	}
 
-	result.ParseFiles(*templatePaths...)
-	return result
+	resultado.ParseFiles(*templatePaths...)
+	return resultado
+}
+
+func ServeResource(w http.ResponseWriter, req *http.Request) {
+
+	path := variaveis.Public + variaveis.TemaDaPagina + req.URL.Path
+	var contentType string
+
+	if strings.HasSuffix(path, ".css") {
+		contentType = "text/css; charset=utf-8"
+	} else if strings.HasSuffix(path, ".js") {
+		contentType = "application/javascript; charset=utf-8"
+	} else {
+		contentType = "text/plain; charset=utf-8"
+	}
+
+	log.Println(path)
+	f, err := os.Open(path)
+	if err == nil {
+		defer f.Close()
+		w.Header().Add("Content-type", contentType)
+		br := bufio.NewReader(f)
+		br.WriteTo(w)
+	} else {
+		w.WriteHeader(404)
+	}
 }
