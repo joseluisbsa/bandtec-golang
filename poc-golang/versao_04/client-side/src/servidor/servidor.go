@@ -11,9 +11,9 @@ import (
 
 func ServeWeb() {
 	gorillaRoute := mux.NewRouter()
-	gorillaRoute.HandleFunc("/", serveContent)
+	gorillaRoute.HandleFunc("/", conteudoDaPagina)
 	// URL com parametros dinamicos
-	gorillaRoute.HandleFunc("/{pageAlias}", serveContent)
+	gorillaRoute.HandleFunc("/{pageAlias}", conteudoDaPagina)
 
 	http.HandleFunc("/css/", paginas.ServeResource)
 	http.HandleFunc("/js/", paginas.ServeResource)
@@ -22,7 +22,7 @@ func ServeWeb() {
 	http.ListenAndServe(":8081", nil)
 }
 
-func serveContent(w http.ResponseWriter, r *http.Request) {
+func conteudoDaPagina(w http.ResponseWriter, r *http.Request) {
 
 	atualizarJSON()
 	urlParams := mux.Vars(r)
@@ -39,8 +39,8 @@ func serveContent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Values to pass into the template
-	context := variaveis.DefaultContext{}
-	context.Title = variaveis.PageAlias
+	pagina := variaveis.DefaultContext{}
+	pagina.Titulo = variaveis.PageAlias
 
-	paginaEstatica.Execute(w, context)
+	paginaEstatica.Execute(w, pagina)
 }

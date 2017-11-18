@@ -11,7 +11,7 @@ var TodasDenuncias = "http://localhost:8080/denuncias/"
 var TodasDenunciasPorRegiao = "http://localhost:8080/denuncias/0"
 
 type DefaultContext struct {
-	Title string
+	Titulo string
 }
 
 type CategoriaFull struct {
