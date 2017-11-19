@@ -10,7 +10,7 @@ import (
 )
 
 func escreverArquivoJSON(arquivo string, jsonAlterado []byte) {
-	if erro := ioutil.WriteFile(localArquivosJSON+arquivo, jsonAlterado, 0666); erro != nil {
+	if erro := ioutil.WriteFile(localArquivosHTMLeJSON+"/"+arquivo, jsonAlterado, 0666); erro != nil {
 		log.Println(erro)
 	}
 }
@@ -21,15 +21,13 @@ func lerArquivoJSON(arquivo string) []byte {
 
 	switch arquivo {
 	case "default.json":
-		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosHTMLeJSON + "/" + arquivo)
 	case "geral.json.html":
-		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosHTMLeJSON + "/" + arquivo)
 	case "categoria.json.html":
-		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosHTMLeJSON + "/" + arquivo)
 	}
-	if erro != nil {
-		log.Println(erro)
-	}
+	verificarErro(erro)
 
 	return dadosArquivoJSON
 }

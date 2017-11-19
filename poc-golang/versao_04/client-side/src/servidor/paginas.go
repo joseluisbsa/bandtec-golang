@@ -8,50 +8,44 @@ import (
 	"os"
 )
 
-var paginasEstaticas = populateStaticPages()
+var paginasEstaticas = carregarHTML()
 
 // função usada para atualizar os arquivos .html e .json
 func atualizarArquivosWeb() {
-	paginasEstaticas = populateStaticPages()
+	paginasEstaticas = carregarHTML()
 }
 
-func populateStaticPages() *template.Template {
-	resultado := template.New("templates")
-	templatePaths := new([]string)
+func carregarHTML() *template.Template {
+	arquivosHTMLEncontrados := template.New("templates")
+	arquivosHTML := new([]string)
 
-	pastaTemplate, erro := os.Open(pastaPaginas)
-	if erro != nil {
-		log.Println(erro)
-	}
-	defer pastaTemplate.Close()
+	pastaArquivosHTML, erro := os.Open(localArquivosHTMLeJSON)
+	verificarErro(erro)
 
-	arquivosPastaTemplate, erro := pastaTemplate.Readdir(-1)
-	if erro != nil {
-		log.Println(erro)
-	}
+	defer pastaArquivosHTML.Close()
 
-	for _, pathinfo := range arquivosPastaTemplate {
-		log.Println(pathinfo.Name())
-		*templatePaths = append(*templatePaths, pastaPaginas+"/"+pathinfo.Name())
+	todosArquivosHTML, erro := pastaArquivosHTML.Readdir(-1)
+	verificarErro(erro)
+
+	for _, arquivo := range todosArquivosHTML {
+		log.Println(arquivo.Name())
+		*arquivosHTML = append(*arquivosHTML, localArquivosHTMLeJSON+"/"+arquivo.Name())
 	}
 
-	basePath := pastaTemas + temaDaPagina
-	pastaTemplate, erro = os.Open(basePath)
-	if erro != nil {
-		log.Println(erro)
-	}
-	defer pastaTemplate.Close()
-	arquivosPastaTemplate, erro = pastaTemplate.Readdir(-1)
-	if erro != nil {
-		log.Println(erro)
-	}
-	for _, pathinfo := range arquivosPastaTemplate {
-		log.Println(pathinfo.Name())
-		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
+	pastaArquivosHTML, erro = os.Open(pastaTemas)
+	verificarErro(erro)
+	defer pastaArquivosHTML.Close()
+
+	todosArquivosHTML, erro = pastaArquivosHTML.Readdir(-1)
+	verificarErro(erro)
+
+	for _, arquivo := range todosArquivosHTML {
+		log.Println(arquivo.Name())
+		*arquivosHTML = append(*arquivosHTML, pastaTemas+"/"+arquivo.Name())
 	}
 
-	resultado.ParseFiles(*templatePaths...)
-	return resultado
+	arquivosHTMLEncontrados.ParseFiles(*arquivosHTML...)
+	return arquivosHTMLEncontrados
 }
 
 func carregarEstilo(w http.ResponseWriter, req *http.Request) {
