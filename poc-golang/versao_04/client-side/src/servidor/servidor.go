@@ -35,7 +35,6 @@ func carregarPagina(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 	}
 
-	//Values to pass into the template
 	pagina := Contexto{}
 	pagina.Titulo = paginaSelecionada
 

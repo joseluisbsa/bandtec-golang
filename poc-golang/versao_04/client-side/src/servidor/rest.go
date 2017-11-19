@@ -65,14 +65,10 @@ func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verifica
 
 func requisitarDados(url string) []DadosDasDenuncias {
 	requisicao, erro := http.Get(url)
-	if erro != nil {
-		log.Println(erro)
-	}
+	verificarErro(erro)
 
 	corpoDaRequisicao, erro := ioutil.ReadAll(requisicao.Body)
-	if erro != nil {
-		log.Println(erro)
-	}
+	verificarErro(erro)
 
 	var denuncias []DadosDasDenuncias
 	// coverte de json para struct
