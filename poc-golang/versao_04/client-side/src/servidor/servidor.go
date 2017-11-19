@@ -9,11 +9,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func ServeWeb() {
+func IniciarServidorWeb() {
 	gorillaRoute := mux.NewRouter()
-	gorillaRoute.HandleFunc("/", conteudoDaPagina)
+	gorillaRoute.HandleFunc("/", carregarPagina)
 	// URL com parametros dinamicos
-	gorillaRoute.HandleFunc("/{pageAlias}", conteudoDaPagina)
+	gorillaRoute.HandleFunc("/{categoria}", carregarPagina)
 
 	http.HandleFunc("/css/", paginas.ServeResource)
 	http.HandleFunc("/js/", paginas.ServeResource)
@@ -22,16 +22,16 @@ func ServeWeb() {
 	http.ListenAndServe(":8081", nil)
 }
 
-func conteudoDaPagina(w http.ResponseWriter, r *http.Request) {
+func carregarPagina(w http.ResponseWriter, r *http.Request) {
 
-	atualizarJSON()
-	urlParams := mux.Vars(r)
-	variaveis.PageAlias = urlParams["pageAlias"]
-	if variaveis.PageAlias == "" {
-		variaveis.PageAlias = "geral"
+	atualizarArquivoJSON()
+	parametrosURL := mux.Vars(r)
+	variaveis.PaginaSelecionada = parametrosURL["categoria"]
+	if variaveis.PaginaSelecionada == "" {
+		variaveis.PaginaSelecionada = "geral"
 	}
 
-	paginaEstatica := paginas.PaginasEstaticas.Lookup(variaveis.PageAlias + ".html")
+	paginaEstatica := paginas.PaginasEstaticas.Lookup(variaveis.PaginaSelecionada + ".html")
 	if paginaEstatica == nil {
 		log.Println("NAO ACHOU!!")
 		paginaEstatica = paginas.PaginasEstaticas.Lookup("404.html")
@@ -40,7 +40,7 @@ func conteudoDaPagina(w http.ResponseWriter, r *http.Request) {
 
 	//Values to pass into the template
 	pagina := variaveis.DefaultContext{}
-	pagina.Titulo = variaveis.PageAlias
+	pagina.Titulo = variaveis.PaginaSelecionada
 
 	paginaEstatica.Execute(w, pagina)
 }

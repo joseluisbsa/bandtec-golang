@@ -1,7 +1,7 @@
 package variaveis
 
 ///home/joseph/github/bandtec-golang/poc-golang/versao_04
-var PageAlias string
+var PaginaSelecionada string
 var TemaDaPagina = "bs4"
 var Public = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/public/"
 var PastaPaginas = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/pages"

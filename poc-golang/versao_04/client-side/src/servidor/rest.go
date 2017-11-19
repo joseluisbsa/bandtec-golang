@@ -11,7 +11,7 @@ import (
 	"variaveis"
 )
 
-func atualizarJSON() {
+func atualizarArquivoJSON() {
 	log.Printf("atualiza arquivo JSON")
 	// Busca na API todas as categorias e o total de denuncias de cada uma
 	respostaFull, erro := http.Get(variaveis.TodasDenuncias)
@@ -86,7 +86,7 @@ func atualizarJSON() {
 	// Mesma rotina acima, porem agora separado as categorias por região
 	for _, item := range categEach {
 		// Para comparar se os nomes são iguais deixo os dois em CAIXA ALTO e comparo.
-		if strings.ToUpper(item.Nome) == strings.ToUpper(variaveis.PageAlias) {
+		if strings.ToUpper(item.Nome) == strings.ToUpper(variaveis.PaginaSelecionada) {
 
 			attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), []byte(item.Regiao), 1)
 			if erro = ioutil.WriteFile(path+"categoria.json.html", attCategoria, 0666); erro != nil {
