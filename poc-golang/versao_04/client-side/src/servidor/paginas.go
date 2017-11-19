@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 var paginasEstaticas = populateStaticPages()
@@ -43,18 +42,12 @@ func populateStaticPages() *template.Template {
 
 func serveResource(w http.ResponseWriter, req *http.Request) {
 
-	path := public + temaDaPagina + req.URL.Path
-	var contentType string
+	path := pastaEstilo + req.URL.Path
+	var contentType = "text/css; charset=utf-8"
 
-	if strings.HasSuffix(path, ".css") {
-		contentType = "text/css; charset=utf-8"
-	} else if strings.HasSuffix(path, ".js") {
-		contentType = "application/javascript; charset=utf-8"
-	} else {
-		contentType = "text/plain; charset=utf-8"
-	}
-
-	log.Println(path)
+	// log.Println(path)
+	// log.Println(req.URL.Path)
+	// log.Println(contentType)
 	f, err := os.Open(path)
 	if err == nil {
 		defer f.Close()

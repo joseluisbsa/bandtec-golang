@@ -14,7 +14,6 @@ func IniciarServidorWeb() {
 	gorillaRoute.HandleFunc("/{categoria}", carregarPagina)
 
 	http.HandleFunc("/css/", serveResource)
-	http.HandleFunc("/js/", serveResource)
 
 	http.Handle("/", gorillaRoute)
 	http.ListenAndServe(":8081", nil)
@@ -22,7 +21,7 @@ func IniciarServidorWeb() {
 
 func carregarPagina(w http.ResponseWriter, r *http.Request) {
 
-	atualizarArquivoJSON()
+	atualizarArquivosJSON()
 	parametrosURL := mux.Vars(r)
 	paginaSelecionada = parametrosURL["categoria"]
 	if paginaSelecionada == "" {
@@ -37,7 +36,7 @@ func carregarPagina(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Values to pass into the template
-	pagina := DefaultContext{}
+	pagina := Contexto{}
 	pagina.Titulo = paginaSelecionada
 
 	paginaEstatica.Execute(w, pagina)

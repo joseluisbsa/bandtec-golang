@@ -7,10 +7,11 @@ var public = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-sid
 var pastaPaginas = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/pages"
 var pastaTemas = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/themes/"
 var localArquivosJSON = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/pages/"
+var pastaEstilo = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src"
 var urlTodasDenuncias = "http://localhost:8080/denuncias/"
 var urlTodasDenunciasPorRegiao = "http://localhost:8080/denuncias/0"
 
-type DefaultContext struct {
+type Contexto struct {
 	Titulo string
 }
 

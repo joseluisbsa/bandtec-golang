@@ -9,6 +9,62 @@ import (
 	"strings"
 )
 
+func escreverArquivoJSON(arquivo string, jsonAlterado []byte) {
+	if erro := ioutil.WriteFile(localArquivosJSON+arquivo, jsonAlterado, 0666); erro != nil {
+		log.Println(erro)
+	}
+}
+
+func lerArquivoJSON(arquivo string) []byte {
+	var dadosArquivoJSON []byte
+	var erro error
+
+	switch arquivo {
+	case "default.json":
+		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+	case "geral.json.html":
+		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+	case "categoria.json.html":
+		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+	}
+	if erro != nil {
+		log.Println(erro)
+	}
+
+	return dadosArquivoJSON
+}
+
+func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verificaPorRegiao bool) {
+
+	dadosArquivoJSON := lerArquivoJSON("default.json")
+	var continua = true
+
+	for _, item := range denuncias {
+		alteracao := []byte(item.Nome)
+
+		if verificaPorRegiao == true {
+			alteracao = []byte(item.Regiao)
+			continua = false
+
+			if strings.ToUpper(item.Nome) == strings.ToUpper(paginaSelecionada) {
+				continua = true
+			}
+		}
+
+		if continua == true {
+			jsonAlterado := bytes.Replace(dadosArquivoJSON, []byte("Categoria"), alteracao, 1)
+			escreverArquivoJSON(arquivo, jsonAlterado)
+
+			dadosArquivoJSON = lerArquivoJSON(arquivo)
+
+			jsonAlterado = bytes.Replace(dadosArquivoJSON, []byte("00"), []byte(item.Total), 1)
+			escreverArquivoJSON(arquivo, jsonAlterado)
+
+			dadosArquivoJSON = lerArquivoJSON(arquivo)
+		}
+	}
+}
+
 func requisitarDados(url string) []DadosDasDenuncias {
 	requisicao, erro := http.Get(url)
 	if erro != nil {
@@ -27,71 +83,14 @@ func requisitarDados(url string) []DadosDasDenuncias {
 	return denuncias
 }
 
-func lerArquivoJSON(arquivo string) []byte {
-	var jsonOut []byte
-	var erro error
-	switch arquivo {
-	case "default.json":
-		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
-	case "geral.json.html":
-		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
-	case "categoria.json.html":
-		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
-
-	}
-	if erro != nil {
-		log.Println(erro)
-	}
-
-	return jsonOut
-}
-
-func escreverArquivoJSON(denuncias []DadosDasDenuncias, arquivo string, verificaPorRegiao bool) {
-
-	jsonOut := lerArquivoJSON("default.json")
-	var continua = true
-
-	for _, item := range denuncias {
-
-		alteracao := []byte(item.Nome)
-
-		if verificaPorRegiao == true {
-			alteracao = []byte(item.Regiao)
-
-			continua = false
-			if strings.ToUpper(item.Nome) == strings.ToUpper(paginaSelecionada) {
-				continua = true
-			}
-		}
-
-		if continua == true {
-
-			attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), alteracao, 1)
-
-			if erro := ioutil.WriteFile(localArquivosJSON+arquivo, attCategoria, 0666); erro != nil {
-				log.Println(erro)
-			}
-
-			jsonOut = lerArquivoJSON(arquivo)
-
-			attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
-			if erro := ioutil.WriteFile(localArquivosJSON+arquivo, attTotal, 0666); erro != nil {
-				log.Println(erro)
-			}
-
-			jsonOut = lerArquivoJSON(arquivo)
-		}
-	}
-}
-
-func atualizarArquivoJSON() {
+func atualizarArquivosJSON() {
 	log.Printf("atualiza arquivo JSON")
 
 	denuncias := requisitarDados(urlTodasDenuncias)
-	escreverArquivoJSON(denuncias, "geral.json.html", false)
+	alterarArquivosJSON(denuncias, "geral.json.html", false)
 
 	denunciasPorRegiao := requisitarDados(urlTodasDenunciasPorRegiao)
-	escreverArquivoJSON(denunciasPorRegiao, "categoria.json.html", true)
+	alterarArquivosJSON(denunciasPorRegiao, "categoria.json.html", true)
 
 	atualizarArquivosWeb()
 }
