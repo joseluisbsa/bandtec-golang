@@ -1,8 +1,6 @@
 package main
 
-import (
-	"servidor"
-)
+import "servidor"
 
 func main() {
 	servidor.IniciarServidorWeb()
