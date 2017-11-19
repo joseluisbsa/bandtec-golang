@@ -27,60 +27,60 @@ func requisitarDados(url string) []DadosDasDenuncias {
 	return denuncias
 }
 
-// func lerArquivoJSON(arquivo string) []byte {
-// 	var jsonOut []byte
-// 	var erro error
-// 	switch arquivo {
-// 	case "default.json":
-// 		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
-// 	case "geral.json.html":
-// 		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
-// 		//log.Println(jsonOut)
-// 		//log.Println("------------- ler arquivos")
-// 	case "categoria.json.html":
-// 		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+func lerArquivoJSON(arquivo string) []byte {
+	var jsonOut []byte
+	var erro error
+	switch arquivo {
+	case "default.json":
+		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+	case "geral.json.html":
+		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
+		//log.Println(jsonOut)
+		//log.Println("------------- ler arquivos")
+	case "categoria.json.html":
+		jsonOut, erro = ioutil.ReadFile(localArquivosJSON + arquivo)
 
-// 	}
-// 	if erro != nil {
-// 		log.Println(erro)
-// 	}
-// 	//log.Println(jsonOut)
-// 	//log.Println("------------- ler arquivos")
+	}
+	if erro != nil {
+		log.Println(erro)
+	}
+	//log.Println(jsonOut)
+	//log.Println("------------- ler arquivos")
 
-// 	return jsonOut
-// }
+	return jsonOut
+}
 
-// func escreverArquivoJSON(denuncias []DadosDasDenuncias, arquivo string) {
+func escreverArquivoJSON(denuncias []DadosDasDenuncias, arquivo string) {
 
-// 	jsonOut := lerArquivoJSON("default.json")
-// 	//log.Println(jsonOut)
-// 	//log.Println("################# volta do ler arquivos")
+	jsonOut := lerArquivoJSON("default.json")
+	//log.Println(jsonOut)
+	//log.Println("################# volta do ler arquivos")
 
-// 	for _, item := range denuncias {
-// 		alteracao := []byte(item.Nome)
-// 		attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), alteracao, 1)
+	for _, item := range denuncias {
+		alteracao := []byte(item.Nome)
+		attCategoria := bytes.Replace(jsonOut, []byte("Categoria"), alteracao, 1)
 
-// 		if erro := ioutil.WriteFile(localArquivosJSON+arquivo, attCategoria, 0666); erro != nil {
-// 			log.Println(erro)
-// 		}
+		if erro := ioutil.WriteFile(localArquivosJSON+arquivo, attCategoria, 0666); erro != nil {
+			log.Println(erro)
+		}
 
-// 		jsonOut := lerArquivoJSON(arquivo)
-// 		log.Println(jsonOut)
-// 		log.Println("################# volta do ler arquivos")
+		jsonOut = lerArquivoJSON(arquivo)
+		log.Println(jsonOut)
+		log.Println("################# volta do ler arquivos")
 
-// 		attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
-// 		if erro := ioutil.WriteFile(localArquivosJSON+arquivo, attTotal, 0666); erro != nil {
-// 			log.Println(erro)
-// 		}
+		attTotal := bytes.Replace(jsonOut, []byte("00"), []byte(item.Total), 1)
+		if erro := ioutil.WriteFile(localArquivosJSON+arquivo, attTotal, 0666); erro != nil {
+			log.Println(erro)
+		}
 
-// 		jsonOut = lerArquivoJSON(arquivo)
-// 	}
-// }
+		jsonOut = lerArquivoJSON(arquivo)
+	}
+}
 
 func atualizarArquivoJSON() {
 	log.Printf("atualiza arquivo JSON")
 
-	//denuncias := requisitarDados(urlTodasDenuncias)
+	denuncias := requisitarDados(urlTodasDenuncias)
 
 	//////////////////////////////////////// rotina para escrever nos arquivos
 	// arquivo default.json com o formato padrão do JSON que a pagina lê
@@ -88,7 +88,7 @@ func atualizarArquivoJSON() {
 	//log.Println(jsonOut)
 	//log.Println("################# volta do ler arquivos")
 
-	//	escreverArquivoJSON(denuncias, "geral.json.html")
+	escreverArquivoJSON(denuncias, "geral.json.html")
 	//log.Println(escreverArquivoJSON)
 	//log.Println("################# volta")
 
@@ -119,18 +119,13 @@ func atualizarArquivoJSON() {
 	// }
 
 	denunciasPorRegiao := requisitarDados(urlTodasDenunciasPorRegiao)
-	log.Println(denunciasPorRegiao)
-	log.Println("------------- denunciasPor regiao")
 
 	jsonOut, erro := ioutil.ReadFile(localArquivosJSON + "default.json")
 	if erro != nil {
 		log.Println(erro)
 	}
-	log.Println(jsonOut)
-	log.Println("------------- jsonout")
 	// Mesma rotina acima, porem agora separado as categorias por região
-	log.Println(paginaSelecionada)
-	log.Println("------------- pagina selecinada")
+
 	for _, item := range denunciasPorRegiao {
 		// Para comparar se os nomes são iguais deixo os dois em CAIXA ALTO e comparo.
 		if strings.ToUpper(item.Nome) == strings.ToUpper(paginaSelecionada) {
@@ -140,7 +135,7 @@ func atualizarArquivoJSON() {
 				log.Println(erro)
 			}
 
-			jsonOut, erro := ioutil.ReadFile(localArquivosJSON + "categoria.json.html")
+			jsonOut, erro = ioutil.ReadFile(localArquivosJSON + "categoria.json.html")
 			if erro != nil {
 				log.Println(erro)
 			}
