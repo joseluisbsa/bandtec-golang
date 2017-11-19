@@ -3,7 +3,6 @@ package servidor
 import (
 	"log"
 	"net/http"
-	"paginas"
 	"variaveis"
 
 	"github.com/gorilla/mux"
@@ -15,8 +14,8 @@ func IniciarServidorWeb() {
 	// URL com parametros dinamicos
 	gorillaRoute.HandleFunc("/{categoria}", carregarPagina)
 
-	http.HandleFunc("/css/", paginas.ServeResource)
-	http.HandleFunc("/js/", paginas.ServeResource)
+	http.HandleFunc("/css/", serveResource)
+	http.HandleFunc("/js/", serveResource)
 
 	http.Handle("/", gorillaRoute)
 	http.ListenAndServe(":8081", nil)
@@ -31,10 +30,10 @@ func carregarPagina(w http.ResponseWriter, r *http.Request) {
 		variaveis.PaginaSelecionada = "geral"
 	}
 
-	paginaEstatica := paginas.PaginasEstaticas.Lookup(variaveis.PaginaSelecionada + ".html")
+	paginaEstatica := paginasEstaticas.Lookup(variaveis.PaginaSelecionada + ".html")
 	if paginaEstatica == nil {
 		log.Println("NAO ACHOU!!")
-		paginaEstatica = paginas.PaginasEstaticas.Lookup("404.html")
+		paginaEstatica = paginasEstaticas.Lookup("404.html")
 		w.WriteHeader(404)
 	}
 

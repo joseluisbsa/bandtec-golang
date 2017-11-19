@@ -1,4 +1,4 @@
-package paginas
+package servidor
 
 import (
 	"bufio"
@@ -10,11 +10,11 @@ import (
 	"variaveis"
 )
 
-var PaginasEstaticas = populateStaticPages()
+var paginasEstaticas = populateStaticPages()
 
 // função usada para atualizar os arquivos .html e .json
-func AtualizarArquivosWeb() {
-	PaginasEstaticas = populateStaticPages()
+func atualizarArquivosWeb() {
+	paginasEstaticas = populateStaticPages()
 }
 
 func populateStaticPages() *template.Template {
@@ -42,7 +42,7 @@ func populateStaticPages() *template.Template {
 	return resultado
 }
 
-func ServeResource(w http.ResponseWriter, req *http.Request) {
+func serveResource(w http.ResponseWriter, req *http.Request) {
 
 	path := variaveis.Public + variaveis.TemaDaPagina + req.URL.Path
 	var contentType string

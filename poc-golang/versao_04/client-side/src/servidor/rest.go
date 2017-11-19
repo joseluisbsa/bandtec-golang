@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"paginas"
 	"strings"
 	"variaveis"
 )
@@ -110,5 +109,5 @@ func atualizarArquivoJSON() {
 		}
 	}
 	// Atualiza todos os arquivos .html e .json que serão usados nas paginas
-	paginas.AtualizarArquivosWeb()
+	atualizarArquivosWeb()
 }
