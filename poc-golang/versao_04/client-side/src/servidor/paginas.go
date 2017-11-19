@@ -19,19 +19,33 @@ func populateStaticPages() *template.Template {
 	resultado := template.New("templates")
 	templatePaths := new([]string)
 
-	templateFolder, _ := os.Open(pastaPaginas)
-	defer templateFolder.Close()
-	templatePathsRaw, _ := templateFolder.Readdir(-1)
-	for _, pathinfo := range templatePathsRaw {
+	pastaTemplate, erro := os.Open(pastaPaginas)
+	if erro != nil {
+		log.Println(erro)
+	}
+	defer pastaTemplate.Close()
+
+	arquivosPastaTemplate, erro := pastaTemplate.Readdir(-1)
+	if erro != nil {
+		log.Println(erro)
+	}
+
+	for _, pathinfo := range arquivosPastaTemplate {
 		log.Println(pathinfo.Name())
 		*templatePaths = append(*templatePaths, pastaPaginas+"/"+pathinfo.Name())
 	}
 
 	basePath := pastaTemas + temaDaPagina
-	templateFolder, _ = os.Open(basePath)
-	defer templateFolder.Close()
-	templatePathsRaw, _ = templateFolder.Readdir(-1)
-	for _, pathinfo := range templatePathsRaw {
+	pastaTemplate, erro = os.Open(basePath)
+	if erro != nil {
+		log.Println(erro)
+	}
+	defer pastaTemplate.Close()
+	arquivosPastaTemplate, erro = pastaTemplate.Readdir(-1)
+	if erro != nil {
+		log.Println(erro)
+	}
+	for _, pathinfo := range arquivosPastaTemplate {
 		log.Println(pathinfo.Name())
 		*templatePaths = append(*templatePaths, basePath+"/"+pathinfo.Name())
 	}
@@ -40,19 +54,17 @@ func populateStaticPages() *template.Template {
 	return resultado
 }
 
-func serveResource(w http.ResponseWriter, req *http.Request) {
+func carregarEstilo(w http.ResponseWriter, req *http.Request) {
 
-	path := pastaEstilo + req.URL.Path
+	arquivosCSS := pastaEstilo + req.URL.Path
+	log.Println(req.URL.Path)
 	var contentType = "text/css; charset=utf-8"
 
-	// log.Println(path)
-	// log.Println(req.URL.Path)
-	// log.Println(contentType)
-	f, err := os.Open(path)
+	conteudoPasta, err := os.Open(arquivosCSS)
 	if err == nil {
-		defer f.Close()
+		defer conteudoPasta.Close()
 		w.Header().Add("Content-type", contentType)
-		br := bufio.NewReader(f)
+		br := bufio.NewReader(conteudoPasta)
 		br.WriteTo(w)
 	} else {
 		w.WriteHeader(404)

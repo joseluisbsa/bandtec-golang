@@ -13,7 +13,7 @@ func IniciarServidorWeb() {
 	// URL com parametros dinamicos
 	gorillaRoute.HandleFunc("/{categoria}", carregarPagina)
 
-	http.HandleFunc("/css/", serveResource)
+	http.HandleFunc("/css/", carregarEstilo)
 
 	http.Handle("/", gorillaRoute)
 	http.ListenAndServe(":8081", nil)
