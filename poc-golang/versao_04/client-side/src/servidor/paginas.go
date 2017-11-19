@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"variaveis"
 )
 
 var paginasEstaticas = populateStaticPages()
@@ -21,15 +20,15 @@ func populateStaticPages() *template.Template {
 	resultado := template.New("templates")
 	templatePaths := new([]string)
 
-	templateFolder, _ := os.Open(variaveis.PastaPaginas)
+	templateFolder, _ := os.Open(pastaPaginas)
 	defer templateFolder.Close()
 	templatePathsRaw, _ := templateFolder.Readdir(-1)
 	for _, pathinfo := range templatePathsRaw {
 		log.Println(pathinfo.Name())
-		*templatePaths = append(*templatePaths, variaveis.PastaPaginas+"/"+pathinfo.Name())
+		*templatePaths = append(*templatePaths, pastaPaginas+"/"+pathinfo.Name())
 	}
 
-	basePath := variaveis.PastaTemas + variaveis.TemaDaPagina
+	basePath := pastaTemas + temaDaPagina
 	templateFolder, _ = os.Open(basePath)
 	defer templateFolder.Close()
 	templatePathsRaw, _ = templateFolder.Readdir(-1)
@@ -44,7 +43,7 @@ func populateStaticPages() *template.Template {
 
 func serveResource(w http.ResponseWriter, req *http.Request) {
 
-	path := variaveis.Public + variaveis.TemaDaPagina + req.URL.Path
+	path := public + temaDaPagina + req.URL.Path
 	var contentType string
 
 	if strings.HasSuffix(path, ".css") {

@@ -3,7 +3,6 @@ package servidor
 import (
 	"log"
 	"net/http"
-	"variaveis"
 
 	"github.com/gorilla/mux"
 )
@@ -25,12 +24,12 @@ func carregarPagina(w http.ResponseWriter, r *http.Request) {
 
 	atualizarArquivoJSON()
 	parametrosURL := mux.Vars(r)
-	variaveis.PaginaSelecionada = parametrosURL["categoria"]
-	if variaveis.PaginaSelecionada == "" {
-		variaveis.PaginaSelecionada = "geral"
+	paginaSelecionada = parametrosURL["categoria"]
+	if paginaSelecionada == "" {
+		paginaSelecionada = "geral"
 	}
 
-	paginaEstatica := paginasEstaticas.Lookup(variaveis.PaginaSelecionada + ".html")
+	paginaEstatica := paginasEstaticas.Lookup(paginaSelecionada + ".html")
 	if paginaEstatica == nil {
 		log.Println("NAO ACHOU!!")
 		paginaEstatica = paginasEstaticas.Lookup("404.html")
@@ -38,8 +37,8 @@ func carregarPagina(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Values to pass into the template
-	pagina := variaveis.DefaultContext{}
-	pagina.Titulo = variaveis.PaginaSelecionada
+	pagina := DefaultContext{}
+	pagina.Titulo = paginaSelecionada
 
 	paginaEstatica.Execute(w, pagina)
 }
