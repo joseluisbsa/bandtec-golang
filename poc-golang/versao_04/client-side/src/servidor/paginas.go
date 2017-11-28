@@ -38,17 +38,17 @@ func carregarHTML() *template.Template {
 
 func carregarEstilo(w http.ResponseWriter, req *http.Request) {
 
-	arquivosCSS := pastaEstilo + req.URL.Path
+	arquivoCSS := localArquivosCSS + req.URL.Path
 	log.Println(req.URL.Path)
 	var contentType = "text/css; charset=utf-8"
 
-	conteudoPasta, err := os.Open(arquivosCSS)
-	if err == nil {
-		defer conteudoPasta.Close()
+	conteudoDoArquivo, erro := os.Open(arquivoCSS)
+	if erro == nil {
 		w.Header().Add("Content-type", contentType)
-		br := bufio.NewReader(conteudoPasta)
+		br := bufio.NewReader(conteudoDoArquivo)
 		br.WriteTo(w)
 	} else {
 		w.WriteHeader(404)
 	}
+	defer conteudoDoArquivo.Close()
 }
