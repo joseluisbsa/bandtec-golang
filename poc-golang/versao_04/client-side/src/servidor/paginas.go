@@ -32,18 +32,6 @@ func carregarHTML() *template.Template {
 		*arquivosHTML = append(*arquivosHTML, localArquivosHTMLeJSON+"/"+arquivo.Name())
 	}
 
-	pastaArquivosHTML, erro = os.Open(pastaTemas)
-	verificarErro(erro)
-	defer pastaArquivosHTML.Close()
-
-	todosArquivosHTML, erro = pastaArquivosHTML.Readdir(-1)
-	verificarErro(erro)
-
-	for _, arquivo := range todosArquivosHTML {
-		log.Println(arquivo.Name())
-		*arquivosHTML = append(*arquivosHTML, pastaTemas+"/"+arquivo.Name())
-	}
-
 	arquivosHTMLEncontrados.ParseFiles(*arquivosHTML...)
 	return arquivosHTMLEncontrados
 }
