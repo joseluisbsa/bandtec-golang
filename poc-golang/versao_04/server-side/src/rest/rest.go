@@ -15,7 +15,7 @@ import (
 func gravarNovaDenuncia(w http.ResponseWriter, req *http.Request) {
 	// modelo que deve enviado
 	// {"categoria":"4","localidade":"2"}
-	log.Printf("Post mais uma Nova Denuncia")
+	log.Printf("POST nova Denuncia")
 	var NovaD bd.NovaDenuncia
 
 	// grava em 'novaD' os dados enviados
@@ -31,7 +31,6 @@ func gravarNovaDenuncia(w http.ResponseWriter, req *http.Request) {
 
 // função para enviar apenas uma categoria com o total por regiao
 func pegarUmaCategoria(w http.ResponseWriter, req *http.Request) {
-	// OBSERVAÇÂO: comentarios de como funciona esta na 'func GetUsuario'
 	log.Printf("Get uma Categoria")
 	parametros := mux.Vars(req)
 	var categoriaEncontrada []bd.DadosDasDenuncias
