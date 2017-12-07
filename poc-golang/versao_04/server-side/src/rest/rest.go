@@ -20,9 +20,8 @@ func gravarNovaDenuncia(w http.ResponseWriter, req *http.Request) {
 
 	// grava em 'novaD' os dados enviados
 	erro := json.NewDecoder(req.Body).Decode(&NovaD)
-	if erro != nil {
-		log.Println("erro em ao gravar em novaD: ", erro.Error())
-	}
+	verificarErro(erro, "Erro ao extrair dados do Body e gravar em NovaD")
+
 	// imprime no terminal os valores recebidos
 	fmt.Println(NovaD)
 	bd.GravarNovaDenuncia(&NovaD)

@@ -87,6 +87,8 @@ func consultarNoBanco(query string, den *[]DadosDasDenuncias, porRegiao bool) {
 	retornoSelectBanco, erro := bancoDeDados.Query(query)
 
 	if erro != nil {
+		verificarErro(erro, "Erro no select das denuncias", false)
+	} else {
 		for retornoSelectBanco.Next() {
 			addCategoria := DadosDasDenuncias{}
 			if porRegiao == false {
@@ -100,8 +102,6 @@ func consultarNoBanco(query string, den *[]DadosDasDenuncias, porRegiao bool) {
 			}
 			*den = append(*den, addCategoria)
 		}
-	} else {
-		verificarErro(erro, "Erro no select das denuncias", false)
 	}
 }
 
@@ -113,6 +113,8 @@ func AtualizarUltimoIDBanco() {
 	defer bancoDeDados.Close()
 
 	if erro != nil {
+		verificarErro(erro, "Erro no select MAX de denuncias", false)
+	} else {
 		for ultimoIDBanco.Next() {
 
 			if erro := ultimoIDBanco.Scan(&proximoIdParaGravarNoBanco); erro != nil {
@@ -121,9 +123,6 @@ func AtualizarUltimoIDBanco() {
 				proximoIdParaGravarNoBanco++
 			}
 		}
-	} else {
-		verificarErro(erro, "Erro no select MAX de denuncias", false)
 	}
-
 	log.Printf("Ultimo ID atualizado: %d", proximoIdParaGravarNoBanco)
 }
