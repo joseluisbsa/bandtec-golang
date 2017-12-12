@@ -1,13 +1,13 @@
 package servidor
 
-///home/joseph/github/bandtec-golang/poc-golang/versao_04
 var paginaSelecionada string
 var temaDaPagina = "bs4"
 
-//var pastaPaginas = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/paginas"
-//var localTemas = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/temas"
-var localArquivosHTMLeJSON = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/paginas"
-var localArquivosCSS = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src"
+//var localArquivosHTMLeJSON = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/paginas"
+var localArquivosHTMLeJSON = "D:/github/bandtec-golang/poc-golang/versao_04/client-side/src/paginas"
+
+//var localArquivosCSS = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src"
+var localArquivosCSS = "D:/github/bandtec-golang/poc-golang/versao_04/client-side/src"
 var urlTodasDenuncias = "http://localhost:8080/denuncias/"
 var urlTodasDenunciasPorRegiao = "http://localhost:8080/denuncias/0"
 

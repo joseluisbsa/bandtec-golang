@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// IniciarServidor cria os endereços das requisições
 func IniciarServidor() {
 
 	router := mux.NewRouter()

@@ -20,7 +20,7 @@ func lerArquivoJSON(arquivo string) []byte {
 	var erro error
 
 	switch arquivo {
-	case "default.json":
+	case "modelo.json":
 		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosHTMLeJSON + "/" + arquivo)
 	case "geral.json.html":
 		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosHTMLeJSON + "/" + arquivo)
@@ -34,23 +34,24 @@ func lerArquivoJSON(arquivo string) []byte {
 
 func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verificaPorRegiao bool) {
 
-	dadosArquivoJSON := lerArquivoJSON("default.json")
-	var continua = true
+	dadosArquivoJSON := lerArquivoJSON("modelo.json")
+	var escreveArquivo = true
 
 	for _, item := range denuncias {
-		alteracao := []byte(item.Nome)
+
+		alteraDescricao := []byte(item.Nome)
 
 		if verificaPorRegiao == true {
-			alteracao = []byte(item.Regiao)
-			continua = false
+			alteraDescricao = []byte(item.Regiao)
+			escreveArquivo = false
 
 			if strings.ToUpper(item.Nome) == strings.ToUpper(paginaSelecionada) {
-				continua = true
+				escreveArquivo = true
 			}
 		}
 
-		if continua == true {
-			jsonAlterado := bytes.Replace(dadosArquivoJSON, []byte("Categoria"), alteracao, 1)
+		if escreveArquivo == true {
+			jsonAlterado := bytes.Replace(dadosArquivoJSON, []byte("Categoria"), alteraDescricao, 1)
 			escreverArquivoJSON(arquivo, jsonAlterado)
 
 			dadosArquivoJSON = lerArquivoJSON(arquivo)
