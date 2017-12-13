@@ -11,6 +11,8 @@ var localArquivosCSS = "D:/github/bandtec-golang/poc-golang/versao_04/client-sid
 var urlTodasDenuncias = "http://localhost:8080/denuncias/"
 var urlTodasDenunciasPorRegiao = "http://localhost:8080/denuncias/0"
 
+var conteudo []string
+
 type Contexto struct {
 	Titulo string
 }

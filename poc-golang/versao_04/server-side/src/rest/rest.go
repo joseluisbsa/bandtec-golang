@@ -3,13 +3,31 @@ package rest
 import (
 	"bd"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
 
 	"github.com/gorilla/mux"
 )
+
+// devolve todas denuncias via (localhost:8080/denuncias/)
+func pegarTodasDenuncias(w http.ResponseWriter, req *http.Request) {
+	log.Printf("GET todas denuncias")
+	json.NewEncoder(w).Encode(bd.Denuncias)
+}
+
+// devolve todas denuncias separado por regiao (localhost:8080/denuncias/0)
+func pegarDenunciasPorRegiao(w http.ResponseWriter, req *http.Request) {
+	log.Printf("GET denuncias por regiao")
+	parametros := mux.Vars(req)
+	var categoriaEncontrada []bd.DadosDasDenuncias
+	for _, item := range bd.DenunciasPorCategoria {
+		if strings.ToLower(item.Nome) == strings.ToLower(parametros["uri"]) {
+			categoriaEncontrada = append(categoriaEncontrada, item)
+		}
+	}
+	json.NewEncoder(w).Encode(bd.DenunciasPorCategoria)
+}
 
 // Adicona mais uma denuncia
 func gravarNovaDenuncia(w http.ResponseWriter, req *http.Request) {
@@ -18,34 +36,12 @@ func gravarNovaDenuncia(w http.ResponseWriter, req *http.Request) {
 	log.Printf("POST nova Denuncia")
 	var NovaD bd.NovaDenuncia
 
-	// grava em 'novaD' os dados enviados
+	// grava em 'novaD' os dados recebidos
 	erro := json.NewDecoder(req.Body).Decode(&NovaD)
-	verificarErro(erro, "Erro ao extrair dados do Body e gravar em NovaD")
+	verificarErro(erro, "ERRO AO SALVAR OS DADOS RECEBIDOS EM 'NOVAD'", false)
 
 	// imprime no terminal os valores recebidos
-	fmt.Println(NovaD)
+	log.Println(NovaD)
 	bd.GravarNovaDenuncia(&NovaD)
 	bd.AtualizarTodasDenuncias()
-}
-
-// função para enviar apenas uma categoria com o total por regiao
-func pegarUmaCategoria(w http.ResponseWriter, req *http.Request) {
-	log.Printf("Get uma Categoria")
-	parametros := mux.Vars(req)
-	var categoriaEncontrada []bd.DadosDasDenuncias
-	for _, item := range bd.DenunciasPorCategoria {
-		if strings.ToLower(item.Nome) == strings.ToLower(parametros["uri"]) {
-			categoriaEncontrada = append(categoriaEncontrada, item)
-		}
-	}
-	// envia todas por regiao, será filtrado no client-side
-	json.NewEncoder(w).Encode(bd.DenunciasPorCategoria)
-	// se quiser apenas uma categoria mesmo, comente a linha acima e descomente a de baixo
-	//json.NewEncoder(w).Encode(categoriaEncontrada)
-}
-
-// envia os dados das categorias via GET
-func pegarTodasCategorias(w http.ResponseWriter, req *http.Request) {
-	log.Printf("Get categorias")
-	json.NewEncoder(w).Encode(bd.Denuncias)
 }

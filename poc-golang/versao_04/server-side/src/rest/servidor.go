@@ -12,9 +12,9 @@ func IniciarServidor() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/denuncias/", pegarTodasCategorias).Methods("GET")   // JSON com todas as categorias
-	router.HandleFunc("/denuncias/{uri}", pegarUmaCategoria).Methods("GET") // devolve apenas uma categoria
-	router.HandleFunc("/denuncias/", gravarNovaDenuncia).Methods("POST")    // adiciona nova denuncia
+	router.HandleFunc("/denuncias/", pegarTodasDenuncias).Methods("GET")
+	router.HandleFunc("/denuncias/{uri}", pegarDenunciasPorRegiao).Methods("GET")
+	router.HandleFunc("/denuncias/", gravarNovaDenuncia).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", router)) // Server na porta 8080 [ localhost:8080 ]
 }

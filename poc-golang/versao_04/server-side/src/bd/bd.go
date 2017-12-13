@@ -7,35 +7,10 @@ import (
 	_ "github.com/denisenkom/go-mssqldb"
 )
 
-// array usado para enviar o total de cada categoria
-var Denuncias []DadosDasDenuncias
-
-// array usado para enviar o total de denuncias por regiao
-var DenunciasPorCategoria []DadosDasDenuncias
-
-// Usado para armazenar o ultimo 'id' do banco de dados
-var proximoIdParaGravarNoBanco int
-
-func GravarNovaDenuncia(nova *NovaDenuncia) {
-
-	AbrirConexaoBanco()
-	gravar, erro := bancoDeDados.Query(`INSERT into tab_denuncia (id, id_categoria, id_localidade) 
-										VALUES (?1, ?2, ?3)`, proximoIdParaGravarNoBanco, &nova.Categoria, &nova.Localidade)
-
-	defer gravar.Close()       // fecha comando Query
-	defer bancoDeDados.Close() // fecha conexão com o Banco
-
-	if erro != nil {
-		log.Println("erro no INSERT:", erro.Error())
-	} else {
-		proximoIdParaGravarNoBanco++
-	}
-}
-
 // AbrirConexaoBanco inicia a conexão com o banco de dados
 func AbrirConexaoBanco() {
 	bancoDeDados, erro = sql.Open("mssql", stringDeConexao)
-	verificarErro(erro, "Erro ao conectar ao banco de dados", true)
+	verificarErro(erro, "ERRO AO CONECTAR COM BANCO DE DADOS", true)
 }
 
 func AtualizarTodasDenuncias() {
@@ -47,7 +22,7 @@ func AtualizarTodasDenuncias() {
 func AtualizarDenuncias() {
 
 	AbrirConexaoBanco()
-
+	// apaga dados existentes no array
 	Denuncias = Denuncias[:0]
 
 	query := `SELECT d.id_categoria, c.categoria, COUNT(d.id_categoria) 
@@ -65,7 +40,7 @@ func AtualizarDenuncias() {
 func AtualizarDenunciasPorCategoria() {
 
 	AbrirConexaoBanco()
-
+	// apaga dados existentes no array
 	DenunciasPorCategoria = DenunciasPorCategoria[:0]
 
 	query := `SELECT d.id_categoria, c.categoria, COUNT(d.id_localidade), l.regiao
@@ -79,7 +54,7 @@ func AtualizarDenunciasPorCategoria() {
 
 	defer bancoDeDados.Close()
 
-	log.Printf("Denuncias por categorias atualizadas")
+	log.Printf("Denuncias por regiao atualizadas")
 }
 
 func consultarNoBanco(query string, den *[]DadosDasDenuncias, porRegiao bool) {
@@ -125,4 +100,20 @@ func AtualizarUltimoIDBanco() {
 		}
 	}
 	log.Printf("Ultimo ID atualizado: %d", proximoIdParaGravarNoBanco)
+}
+
+func GravarNovaDenuncia(nova *NovaDenuncia) {
+
+	AbrirConexaoBanco()
+	gravar, erro := bancoDeDados.Query(`INSERT into tab_denuncia (id, id_categoria, id_localidade) 
+											VALUES (?1, ?2, ?3)`, proximoIdParaGravarNoBanco, &nova.Categoria, &nova.Localidade)
+
+	defer gravar.Close()       // fecha comando Query
+	defer bancoDeDados.Close() // fecha conexão com o Banco
+
+	if erro != nil {
+		log.Println("erro no INSERT:", erro.Error())
+	} else {
+		proximoIdParaGravarNoBanco++
+	}
 }
