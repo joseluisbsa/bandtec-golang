@@ -10,9 +10,8 @@ import (
 )
 
 func escreverArquivoJSON(arquivo string, jsonAlterado []byte) {
-	if erro := ioutil.WriteFile(localArquivosHTMLeJSON+"/"+arquivo, jsonAlterado, 0666); erro != nil {
-		log.Println(erro)
-	}
+	erro := ioutil.WriteFile(localArquivosHTMLeJSON+"/"+arquivo, jsonAlterado, 0666)
+	verificarErro(erro, "ERRO AO ESCREVER NO ARQUIVO JSON", false)
 }
 
 func lerArquivoJSON(arquivo string) []byte {
@@ -64,28 +63,34 @@ func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verifica
 	}
 }
 
-func requisitarDados(url string) []DadosDasDenuncias {
+func RequisitarDados(url string) ([]DadosDasDenuncias, error) {
 
 	var denuncias []DadosDasDenuncias
 
 	requisicao, erro := http.Get(url)
-	verificarErro(erro, "ERRO NA REQUISICAO DOS DADOS - GET", false)
+	if erro != nil {
+		return nil, erro
+	}
 
 	corpoDaRequisicao, erro := ioutil.ReadAll(requisicao.Body)
-	verificarErro(erro, "ERRO AO GRAVAR OS DADOS RECEBIDOS DA REQUISIÇÃO", false)
+	if erro != nil {
+		return nil, erro
+	}
 	// coverte de json para struct
 	json.Unmarshal(corpoDaRequisicao, &denuncias)
 
-	return denuncias
+	return denuncias, erro
 }
 
 func atualizarArquivosJSON() {
 	log.Printf("atualiza arquivo JSON")
 
-	denuncias := requisitarDados(urlTodasDenuncias)
+	denuncias, erro := RequisitarDados(urlTodasDenuncias)
+	verificarErro(erro, "ERRO AO REQUISITAR DADOS VIA GET TODAS DENUNCIAS", false)
 	alterarArquivosJSON(denuncias, "geral.json.html", false)
 
-	denunciasPorRegiao := requisitarDados(urlTodasDenunciasPorRegiao)
+	denunciasPorRegiao, erro := RequisitarDados(urlTodasDenunciasPorRegiao)
+	verificarErro(erro, "ERRO AO REQUISITAR DADOS VIA GET DENUNCIAS POR REGIAO", false)
 	alterarArquivosJSON(denunciasPorRegiao, "categoria.json.html", true)
 
 	atualizarArquivosWeb()

@@ -50,7 +50,7 @@ func carregarHTML() *template.Template {
 	verificarErro(erro, "ERRO AO COLETAR ARQUIVOS DA PASTA HTML E JSON", true)
 
 	for _, arquivo := range todosArquivosHTML {
-		log.Println(arquivo.Name())
+		//log.Println(arquivo.Name())
 		*arquivosHTML = append(*arquivosHTML, localArquivosHTMLeJSON+"/"+arquivo.Name())
 	}
 
