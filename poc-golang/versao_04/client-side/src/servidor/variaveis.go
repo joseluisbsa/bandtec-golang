@@ -3,15 +3,17 @@ package servidor
 var paginaSelecionada string
 var temaDaPagina = "bs4"
 
-//var localArquivosHTMLeJSON = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/paginas"
-var localArquivosHTMLeJSON = "D:/github/bandtec-golang/poc-golang/versao_04/client-side/src/paginas"
+var localArquivosHTMLeJSON = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src/paginas"
 
-//var localArquivosCSS = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src"
-var localArquivosCSS = "D:/github/bandtec-golang/poc-golang/versao_04/client-side/src"
+//var localArquivosHTMLeJSON = "D:/github/bandtec-golang/poc-golang/versao_04/client-side/src/paginas"
+
+var localArquivosCSS = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/client-side/src"
+
+//var localArquivosCSS = "D:/github/bandtec-golang/poc-golang/versao_04/client-side/src"
 var urlTodasDenuncias = "http://localhost:8080/denuncias/"
 var urlTodasDenunciasPorRegiao = "http://localhost:8080/denuncias/0"
 
-var conteudo []string
+var paginasEstaticas = carregarHTML()
 
 type Contexto struct {
 	Titulo string

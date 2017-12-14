@@ -6,13 +6,35 @@ import (
 	"log"
 	"net/http"
 	"os"
-)
 
-var paginasEstaticas = carregarHTML()
+	"github.com/gorilla/mux"
+)
 
 // função usada para atualizar os arquivos .html e .json
 func atualizarArquivosWeb() {
 	paginasEstaticas = carregarHTML()
+}
+
+func carregarPagina(w http.ResponseWriter, r *http.Request) {
+
+	atualizarArquivosJSON()
+	parametrosURL := mux.Vars(r)
+	paginaSelecionada = parametrosURL["categoria"]
+	if paginaSelecionada == "" {
+		paginaSelecionada = "geral"
+	}
+
+	paginaEstatica := paginasEstaticas.Lookup(paginaSelecionada + ".html")
+	if paginaEstatica == nil {
+		log.Println("NAO ACHOU!!")
+		paginaEstatica = paginasEstaticas.Lookup("404.html")
+		w.WriteHeader(404)
+	}
+
+	pagina := Contexto{}
+	pagina.Titulo = paginaSelecionada
+
+	paginaEstatica.Execute(w, pagina)
 }
 
 func carregarHTML() *template.Template {
@@ -20,12 +42,12 @@ func carregarHTML() *template.Template {
 	arquivosHTML := new([]string)
 
 	pastaArquivosHTML, erro := os.Open(localArquivosHTMLeJSON)
-	verificarErro(erro)
+	verificarErro(erro, "ERRO AO BUSCAR ARQUIVOS HTML E JSON", true)
 
 	defer pastaArquivosHTML.Close()
 
 	todosArquivosHTML, erro := pastaArquivosHTML.Readdir(-1)
-	verificarErro(erro)
+	verificarErro(erro, "ERRO AO COLETAR ARQUIVOS DA PASTA HTML E JSON", true)
 
 	for _, arquivo := range todosArquivosHTML {
 		log.Println(arquivo.Name())

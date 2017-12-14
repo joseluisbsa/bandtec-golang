@@ -27,7 +27,7 @@ func lerArquivoJSON(arquivo string) []byte {
 	case "categoria.json.html":
 		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosHTMLeJSON + "/" + arquivo)
 	}
-	verificarErro(erro)
+	verificarErro(erro, "ERRO AO LER ARQUIVO", false)
 
 	return dadosArquivoJSON
 }
@@ -69,10 +69,10 @@ func requisitarDados(url string) []DadosDasDenuncias {
 	var denuncias []DadosDasDenuncias
 
 	requisicao, erro := http.Get(url)
-	verificarErro(erro)
+	verificarErro(erro, "ERRO NA REQUISICAO DOS DADOS - GET", false)
 
 	corpoDaRequisicao, erro := ioutil.ReadAll(requisicao.Body)
-	verificarErro(erro)
+	verificarErro(erro, "ERRO AO GRAVAR OS DADOS RECEBIDOS DA REQUISIÇÃO", false)
 	// coverte de json para struct
 	json.Unmarshal(corpoDaRequisicao, &denuncias)
 
