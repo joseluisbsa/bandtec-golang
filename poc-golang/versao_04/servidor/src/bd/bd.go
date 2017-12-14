@@ -15,10 +15,11 @@ func AbrirConexaoBanco() {
 
 func AtualizarTodasDenuncias() {
 	AtualizarDenuncias()
-	AtualizarDenunciasPorCategoria()
+	AtualizarDenunciasPorRegiao()
 	AtualizarUltimoIDBanco()
 }
 
+// AtualizarDenuncias apenas busca no banco de dados e salva no array de structs 'Denuncias'
 func AtualizarDenuncias() {
 
 	AbrirConexaoBanco()
@@ -31,17 +32,18 @@ func AtualizarDenuncias() {
 			GROUP BY d.id_categoria, c.categoria`
 
 	consultarNoBanco(query, &Denuncias, false)
-
+	// fecha conexão com banco
 	defer bancoDeDados.Close()
 
 	log.Printf("Denuncias atualizadas")
 }
 
-func AtualizarDenunciasPorCategoria() {
+// AtualizarDenunciasPorRegiao apenas busca no banco de dados e salva no array de structs 'DenunciasPorRegiao'
+func AtualizarDenunciasPorRegiao() {
 
 	AbrirConexaoBanco()
 	// apaga dados existentes no array
-	DenunciasPorCategoria = DenunciasPorCategoria[:0]
+	DenunciasPorRegiao = DenunciasPorRegiao[:0]
 
 	query := `SELECT d.id_categoria, c.categoria, COUNT(d.id_localidade), l.regiao
 			FROM tab_denuncia d JOIN tab_categoria c 
@@ -50,32 +52,36 @@ func AtualizarDenunciasPorCategoria() {
 			ON d.id_localidade = l.id 
 			GROUP BY d.id_localidade, d.id_categoria, c.categoria, l.regiao`
 
-	consultarNoBanco(query, &DenunciasPorCategoria, true)
+	consultarNoBanco(query, &DenunciasPorRegiao, true)
 
 	defer bancoDeDados.Close()
 
 	log.Printf("Denuncias por regiao atualizadas")
 }
 
+// consultarNoBanco faz o select no banco de dados e salva em 'retornoSelectBanco'
 func consultarNoBanco(query string, den *[]DadosDasDenuncias, porRegiao bool) {
-
+	// SELECT principal
 	retornoSelectBanco, erro := bancoDeDados.Query(query)
 
 	if erro != nil {
-		verificarErro(erro, "Erro no select das denuncias", false)
+		verificarErro(erro, "ERRO NO SELECT PRINCIPAL DAS DENUNCIAS", false)
 	} else {
 		for retornoSelectBanco.Next() {
-			addCategoria := DadosDasDenuncias{}
-			if porRegiao == false {
-				if erro := retornoSelectBanco.Scan(&addCategoria.ID, &addCategoria.Nome, &addCategoria.Total); erro != nil {
-					log.Println("erro ao salvar as categoriasFull retornados do Banco:", erro.Error())
-				}
-			} else {
-				if erro := retornoSelectBanco.Scan(&addCategoria.ID, &addCategoria.Nome, &addCategoria.Total, &addCategoria.Regiao); erro != nil {
-					log.Println("erro ao salvar as categoriasEach retornados do Banco:", erro.Error())
-				}
+			// 'addDenuncia' criado como uma struct vazia para receber cada linha retornada
+			// do banco e depois ser adicionada no ponteiro do array das denuncias
+			addDenuncia := DadosDasDenuncias{}
+			// se for por regiao o select traz um campo a mais o addDenuncia.Regiao
+			switch porRegiao {
+			case false:
+				erro := retornoSelectBanco.Scan(&addDenuncia.ID, &addDenuncia.Nome, &addDenuncia.Total)
+				verificarErro(erro, "ERRO AO SALVAR AS DENUNCIAS RETORNADAS DO BANCO NA STRUCT", true)
+			case true:
+				erro := retornoSelectBanco.Scan(&addDenuncia.ID, &addDenuncia.Nome, &addDenuncia.Total, &addDenuncia.Regiao)
+				verificarErro(erro, "ERRO AO SALVAR AS DENUNCIAS POR REGIAO RETORNADAS DO BANCO NA STRUCT", true)
 			}
-			*den = append(*den, addCategoria)
+			// adiocina cada denuncia encontrada no ponteiro
+			*den = append(*den, addDenuncia)
 		}
 	}
 }
@@ -83,17 +89,19 @@ func consultarNoBanco(query string, den *[]DadosDasDenuncias, porRegiao bool) {
 func AtualizarUltimoIDBanco() {
 
 	AbrirConexaoBanco()
-	ultimoIDBanco, erro := bancoDeDados.Query("select MAX(id) from tab_denuncia")
+	ultimoIDBanco, erro := bancoDeDados.Query("SELECT MAX(id) FROM tab_denuncia")
 	defer ultimoIDBanco.Close()
 	defer bancoDeDados.Close()
 
 	if erro != nil {
-		verificarErro(erro, "Erro no select MAX de denuncias", false)
+		verificarErro(erro, "ERRO NO SELECT MAX DE DENUNCIAS", false)
 	} else {
 		for ultimoIDBanco.Next() {
+			// salve a quantidade de denuncias já existentes
+			erro := ultimoIDBanco.Scan(&proximoIdParaGravarNoBanco)
 
-			if erro := ultimoIDBanco.Scan(&proximoIdParaGravarNoBanco); erro != nil {
-				log.Println("erro ao salvar categoriasCount retornados do Banco:", erro.Error())
+			if erro != nil {
+				verificarErro(erro, "ERRO AO SALVAR O ULTIMO ID NA VARIAVEL", false)
 			} else {
 				proximoIdParaGravarNoBanco++
 			}
@@ -112,7 +120,7 @@ func GravarNovaDenuncia(nova *NovaDenuncia) {
 	defer bancoDeDados.Close() // fecha conexão com o Banco
 
 	if erro != nil {
-		log.Println("erro no INSERT:", erro.Error())
+		verificarErro(erro, "ERRO NO INSERT", false)
 	} else {
 		proximoIdParaGravarNoBanco++
 	}

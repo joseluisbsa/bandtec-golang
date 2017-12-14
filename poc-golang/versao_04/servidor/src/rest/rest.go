@@ -21,12 +21,12 @@ func pegarDenunciasPorRegiao(w http.ResponseWriter, req *http.Request) {
 	log.Printf("GET denuncias por regiao")
 	parametros := mux.Vars(req)
 	var categoriaEncontrada []bd.DadosDasDenuncias
-	for _, item := range bd.DenunciasPorCategoria {
+	for _, item := range bd.DenunciasPorRegiao {
 		if strings.ToLower(item.Nome) == strings.ToLower(parametros["uri"]) {
 			categoriaEncontrada = append(categoriaEncontrada, item)
 		}
 	}
-	json.NewEncoder(w).Encode(bd.DenunciasPorCategoria)
+	json.NewEncoder(w).Encode(bd.DenunciasPorRegiao)
 }
 
 // Adicona mais uma denuncia

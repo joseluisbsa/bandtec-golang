@@ -9,7 +9,7 @@ import (
 var Denuncias []DadosDasDenuncias
 
 // array usado para enviar as denuncias por regiao
-var DenunciasPorCategoria []DadosDasDenuncias
+var DenunciasPorRegiao []DadosDasDenuncias
 
 // Usado para armazenar o ultimo 'id' do banco de dados
 var proximoIdParaGravarNoBanco int
