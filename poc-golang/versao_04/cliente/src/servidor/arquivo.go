@@ -14,7 +14,7 @@ func escreverArquivoJSON(arquivo string, jsonAlterado []byte) {
 	verificarErro(erro, "ERRO AO ESCREVER NO ARQUIVO JSON", false)
 }
 
-func lerArquivoJSON(arquivo string) []byte {
+func LerArquivoJSON(arquivo string) ([]byte, error) {
 	var dadosArquivoJSON []byte
 	var erro error
 
@@ -26,14 +26,15 @@ func lerArquivoJSON(arquivo string) []byte {
 	case "categoria.json.html":
 		dadosArquivoJSON, erro = ioutil.ReadFile(localArquivosHTMLeJSON + "/" + arquivo)
 	}
-	verificarErro(erro, "ERRO AO LER ARQUIVO", false)
 
-	return dadosArquivoJSON
+	return dadosArquivoJSON, erro
 }
 
 func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verificaPorRegiao bool) {
-
-	dadosArquivoJSON := lerArquivoJSON("modelo.json")
+	// ignoro o erro colocando o _
+	dadosArquivoJSON, _ := LerArquivoJSON("modelo.json")
+	// escreveArquivo usado quando for por regiao, se o nome da pagina selecionada
+	// for igual o Nome do objeto corrente no FOR RANGE
 	var escreveArquivo = true
 
 	for _, item := range denuncias {
@@ -43,22 +44,25 @@ func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verifica
 		if verificaPorRegiao == true {
 			alteraDescricao = []byte(item.Regiao)
 			escreveArquivo = false
-
+			// coloca as duas strings em caixa alta para comparar
 			if strings.ToUpper(item.Nome) == strings.ToUpper(paginaSelecionada) {
 				escreveArquivo = true
 			}
 		}
 
 		if escreveArquivo == true {
+			// dadosArquivoJSON esta com o conteudo do modelo.json
+			// o Replace busca pela primeira para "Categoria" e
+			// substitui pelo Nome salvo em alteraDescricao
 			jsonAlterado := bytes.Replace(dadosArquivoJSON, []byte("Categoria"), alteraDescricao, 1)
 			escreverArquivoJSON(arquivo, jsonAlterado)
 
-			dadosArquivoJSON = lerArquivoJSON(arquivo)
+			dadosArquivoJSON, _ = LerArquivoJSON(arquivo)
 
 			jsonAlterado = bytes.Replace(dadosArquivoJSON, []byte("00"), []byte(item.Total), 1)
 			escreverArquivoJSON(arquivo, jsonAlterado)
 
-			dadosArquivoJSON = lerArquivoJSON(arquivo)
+			dadosArquivoJSON, _ = LerArquivoJSON(arquivo)
 		}
 	}
 }
@@ -66,12 +70,12 @@ func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verifica
 func RequisitarDados(url string) ([]DadosDasDenuncias, error) {
 
 	var denuncias []DadosDasDenuncias
-
+	// faz um GET no servidor rest
 	requisicao, erro := http.Get(url)
 	if erro != nil {
 		return nil, erro
 	}
-
+	// armazena JSON retornado do GET
 	corpoDaRequisicao, erro := ioutil.ReadAll(requisicao.Body)
 	if erro != nil {
 		return nil, erro
@@ -92,6 +96,6 @@ func atualizarArquivosJSON() {
 	denunciasPorRegiao, erro := RequisitarDados(urlTodasDenunciasPorRegiao)
 	verificarErro(erro, "ERRO AO REQUISITAR DADOS VIA GET DENUNCIAS POR REGIAO", false)
 	alterarArquivosJSON(denunciasPorRegiao, "categoria.json.html", true)
-
+	// atualiza as paginas HTML
 	atualizarArquivosWeb()
 }
