@@ -38,9 +38,7 @@ func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verifica
 	var escreveArquivo = true
 
 	for _, item := range denuncias {
-
 		alteraDescricao := []byte(item.Nome)
-
 		if verificaPorRegiao == true {
 			alteraDescricao = []byte(item.Regiao)
 			escreveArquivo = false
@@ -58,7 +56,7 @@ func alterarArquivosJSON(denuncias []DadosDasDenuncias, arquivo string, verifica
 			escreverArquivoJSON(arquivo, jsonAlterado)
 
 			dadosArquivoJSON, _ = LerArquivoJSON(arquivo)
-
+			
 			jsonAlterado = bytes.Replace(dadosArquivoJSON, []byte("00"), []byte(item.Total), 1)
 			escreverArquivoJSON(arquivo, jsonAlterado)
 

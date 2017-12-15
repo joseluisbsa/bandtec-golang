@@ -45,7 +45,11 @@ func attHTML() {
 	themeName = getThemeName()
 	staticPages = populateStaticPages()
 }
-
+/*
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	SERVIDOR.GO
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*/
 func serveWeb() {
 
 	gorillaRoute := mux.NewRouter()
@@ -60,7 +64,11 @@ func serveWeb() {
 	http.Handle("/", gorillaRoute)
 	http.ListenAndServe(":80", nil)
 }
-
+/*
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	ARQUIVO.GO
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*/
 func atualizaJSON() {
 	log.Printf("atualiza arquivo JSON")
 	// Busca na API todas as categorias e o total de denuncias de cada uma
@@ -172,7 +180,11 @@ func atualizaJSON() {
 	// Atualiza todos os arquivos .html e .json que serão usados nas paginas
 	attHTML()
 }
-
+/*
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	PAGINAS.GO
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*/
 func serveContent(w http.ResponseWriter, r *http.Request) {
 
 	atualizaJSON()
