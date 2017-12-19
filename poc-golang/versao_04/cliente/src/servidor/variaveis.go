@@ -10,8 +10,8 @@ var localArquivosHTMLeJSON = "/home/joseph/github/bandtec-golang/poc-golang/vers
 var localArquivosCSS = "/home/joseph/github/bandtec-golang/poc-golang/versao_04/cliente/src"
 
 //var localArquivosCSS = "D:/github/bandtec-golang/poc-golang/versao_04/client-side/src"
-var urlTodasDenuncias = "http://localhost:8080/denuncias/"
-var urlTodasDenunciasPorRegiao = "http://localhost:8080/denuncias/0"
+var urlTodasDenuncias = "http://12.0.0.92:8080/denuncias/"
+var urlTodasDenunciasPorRegiao = "http://12.0.0.92:8080/denuncias/0"
 
 var paginasEstaticas = carregarHTML()
 
